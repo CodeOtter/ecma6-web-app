@@ -1,0 +1,49 @@
+{
+  "name": "cult-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "ava"
+  },
+  "author": "",
+  "license": "ISC",
+  "ava": {
+    "files": [
+      "test/**/*",
+      "!test/config",
+      "!test/mocks"
+    ],
+    "concurrency": 5,
+    "failFast": true,
+    "failWithoutAssertions": false,
+    "require": [
+      "./test/config/index.js"
+    ],
+    "verbose": true,
+    "nodeArguments": [
+      "--trace-deprecation",
+      "--napi-modules"
+    ]
+  },
+  "devDependencies": {
+    "ava": "3.5.1",
+    "eslint": "6.8.0",
+    "eslint-config-standard": "14.1.1",
+    "eslint-plugin-import": "2.20.1",
+    "eslint-plugin-node": "11.0.0",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-standard": "4.0.1",
+    "testdouble": "3.13.1"
+  },
+  "dependencies": {
+    "awilix": "4.2.5",
+    "body-parser": "1.19.0",
+    "dotenv": "8.2.0",
+    "esm": "3.2.25",
+    "express": "4.17.1",
+    "mongoose": "5.9.5",
+    "socket.io": "2.3.0"
+  }
+}
