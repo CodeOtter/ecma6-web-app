@@ -9,4 +9,3 @@ A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
 * [Ava](https://github.com/avajs/ava) for parallel testing
 * [ESM](https://github.com/standard-things/esm) for easy and Babel-less ECMA6 support for import/export
 * [TestDouble](https://github.com/testdouble/testdouble.js) for easy mocking of dependencies
-* 
