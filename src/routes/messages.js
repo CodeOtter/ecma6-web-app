@@ -1,9 +1,9 @@
 import { resolve } from '../container'
 import Message from '../models/message'
 
-const http = resolve('httpService')
-const socket = resolve('socketService')
-const log = resolve('logService')
+const http = resolve('HttpService')
+const socket = resolve('SocketService')
+const log = resolve('LogService')
 
 /**
  * [description]

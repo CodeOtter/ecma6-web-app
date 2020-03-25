@@ -1,6 +1,6 @@
 import { container } from './container'
 
-const appService = container.resolve('appService')
+const appService = container.resolve('AppService')
 
 /**
  * [start description]

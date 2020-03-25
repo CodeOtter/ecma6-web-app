@@ -6,9 +6,9 @@ export default class MongoService {
    * @param  {[type]} options.mongoUrl [description]
    * @return {[type]}                  [description]
    */
-  constructor ({ mongoUrl, logService }) {
-    this.url = mongoUrl
-    this.log = logService
+  constructor ({ MongoUrl, LogService }) {
+    this.url = MongoUrl
+    this.log = LogService
     this.instance = null
   }
 

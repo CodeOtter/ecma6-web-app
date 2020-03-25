@@ -10,10 +10,10 @@ export default class HttpService {
    * @param  {[type]} options.staticFileDir [description]
    * @return {[type]}                       [description]
    */
-  constructor ({ httpPort, staticFileDir, logService }) {
-    this.port = httpPort
-    this.staticFileDir = staticFileDir
-    this.log = logService
+  constructor ({ HttpPort, StaticFileDir, LogService }) {
+    this.port = HttpPort
+    this.staticFileDir = StaticFileDir
+    this.log = LogService
     this.express = express()
     this.server = http.Server(this.express)
     this.instance = false

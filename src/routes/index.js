@@ -4,4 +4,4 @@ import './messages'
 
 import { resolve } from '../container'
 
-resolve('logService').debug('HTTP routes defined.')
+resolve('LogService').debug('HTTP routes defined.')

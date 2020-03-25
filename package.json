@@ -38,12 +38,14 @@
     "testdouble": "3.13.1"
   },
   "dependencies": {
+    "@sendgrid/client": "6.5.5",
     "awilix": "4.2.5",
     "body-parser": "1.19.0",
     "dotenv": "8.2.0",
     "esm": "3.2.25",
     "express": "4.17.1",
     "mongoose": "5.9.5",
-    "socket.io": "2.3.0"
+    "socket.io": "2.3.0",
+    "twilio": "3.41.1"
   }
 }

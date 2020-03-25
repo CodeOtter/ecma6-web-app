@@ -13,7 +13,7 @@ export default class AppService {
       this.services[dep] = options[dep]
     }
 
-    this.log = options.logService
+    this.log = options.LogService
     this.instances = null
     this.log.debug('AppService constructed')
   }

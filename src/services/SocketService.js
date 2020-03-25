@@ -1,9 +1,9 @@
 import socketIo from 'socket.io'
 
 export default class SocketService {
-  constructor ({ httpService, logService }) {
-    this.http = httpService
-    this.log = logService
+  constructor ({ HttpService, LogService }) {
+    this.http = HttpService
+    this.log = LogService
     this.instance = null
   }
 
