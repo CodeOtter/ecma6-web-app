@@ -1,10 +1,7 @@
-import { Client } from '@sendgrid/client'
-
 export default class EmailService {
-  constructor ({ SendgridApiKey, LogService }) {
+  constructor ({ EmailProvider, LogService }) {
     this.log = LogService
-    this.instance = new Client()
-    this.instance.setApiKey(SendgridApiKey)
+    this.instance = EmailProvider
     this.log.debug('EmailService constructed')
   }
 }

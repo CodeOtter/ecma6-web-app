@@ -1,14 +1,13 @@
-import mongoose from 'mongoose'
-
 export default class MongoService {
   /**
    * [constructor description]
    * @param  {[type]} options.mongoUrl [description]
    * @return {[type]}                  [description]
    */
-  constructor ({ MongoUrl, LogService }) {
+  constructor ({ MongoUrl, MongoOrmProvider, LogService }) {
     this.url = MongoUrl
     this.log = LogService
+    this.mongoOrm = MongoOrmProvider
     this.instance = null
   }
 
@@ -21,7 +20,7 @@ export default class MongoService {
     this.log.debug('Starting MongoService instance...')
     return new Promise((resolve, reject) => {
       if (!this.instance) {
-        this.instance = mongoose.connect(url || this.url, {
+        this.instance = this.mongoOrm.connect(url || this.url, {
           useNewUrlParser: true,
           useUnifiedTopology: true
         }, err => {

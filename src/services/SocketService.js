@@ -1,45 +1,33 @@
-import socketIo from 'socket.io'
-import PubNub from 'pubnub'
-
 const noop = () => {}
 
 export default class SocketService {
-  constructor ({ HttpService, LogService, UsePubnub, PubnubPublishKey, PubnubSubscribeKey, PubnubUuid }) {
+  constructor ({ HttpService, LogService, UsePubnub, SocketProvider, ScaledSocketProvider }) {
     this.http = HttpService
     this.log = LogService
     this.usePubnub = UsePubnub
-    this.publishKey = PubnubPublishKey
-    this.subscribeKey = PubnubSubscribeKey
-    this.uuid = PubnubUuid
-    this.instance = null
     this.channels = new Map()
+    this.scaledSocketProvider = ScaledSocketProvider
+    this.socketProvider = SocketProvider
+    this.instance = null
   }
 
   /**
    * [start description]
    * @return {[type]} [description]
    */
-  async start () {
+  start () {
     this.log.debug('Starting SocketService...')
-    return new Promise(resolve => {
-      if (!this.instance) {
-        if (this.usePubnub) {
-          this.instance = new PubNub({
-            publishKey: this.publishKey,
-            subscribeKey: this.subscribeKey,
-            uuid: this.uuid
-          })
-          return resolve(this.instance)
-        } else {
-          this.instance = socketIo(this.http.server)
-          this.log.debug('SocketService started.')
-          return resolve(this.instance)
-        }
+    if (!this.instance) {
+      if (this.usePubnub) {
+        this.instance = this.scaledSocketProvider
       } else {
-        this.log.debug('SocketService already started.')
-        return resolve(this.instance)
+        this.instance = this.socketProvider(this.http.server)
+        this.log.debug('SocketService started.')
       }
-    })
+    } else {
+      this.log.debug('SocketService already started.')
+    }
+    return this.instance
   }
 
   /**
@@ -226,7 +214,7 @@ export default class SocketService {
    */
   unsubscribe (channels) {
     if (this.usePubnub) {
-      this.instance.unwasubscribe({
+      this.instance.unsubscribe({
         channels
       })
     } else {

@@ -11,3 +11,4 @@ A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
 * [TestDouble](https://github.com/testdouble/testdouble.js) for easy mocking of dependencies
 * [Twilio](https://github.com/twilio/twilio-node) for SMS messaging.
 * [SendGrid](https://github.com/sendgrid/sendgrid-nodejs) for emailing.
+* [PubNub](https://github.com/pubnub/javascript) for sockets at scale.

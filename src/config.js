@@ -1,20 +1,40 @@
+import {
+  asFunction,
+  asClass,
+  Lifetime,
+  InjectionMode
+} from 'awilix'
 import { registerValue } from './container'
-
-require('dotenv').config()
+import dotenv from 'dotenv'
 
 // @SETUP: Define dependency paths here
 export const dependencyPaths = [
-  'src/services/**/*.js'
+  [
+    'src/providers/**/*.js', {
+      lifetime: Lifetime.SINGLETON,
+      register: asFunction
+    }
+  ],
+  [
+    'src/services/**/*.js', {
+      injectionMode: InjectionMode.PROXY,
+      lifetime: Lifetime.SINGLETON,
+      register: asClass
+    }
+  ]
 ]
 
 // @SETUP: Determine order of dependency injection here
-export const dependencyOrder = [
+export const serviceDependencyOrder = [
+  // Services
   'MongoService',
   'HttpService',
   'SocketService',
   'SmsService',
   'EmailService'
 ]
+
+dotenv.config()
 
 // @SETUP: Define a .env file and defined the variables below there
 export const MongoUrl = registerValue('MongoUrl', process.env.MONGO_URL)

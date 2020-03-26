@@ -1,4 +1,4 @@
-import { dependencyOrder } from '../config'
+import { serviceDependencyOrder } from '../config'
 
 export default class AppService {
   /**
@@ -9,8 +9,10 @@ export default class AppService {
   constructor (options) {
     this.services = {}
 
-    for (const dep of dependencyOrder) {
-      this.services[dep] = options[dep]
+    for (const serviceName of serviceDependencyOrder) {
+      if (serviceName.slice(-7) === 'Service') {
+        this.services[serviceName] = options[serviceName]
+      }
     }
 
     this.log = options.LogService

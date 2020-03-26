@@ -1,8 +1,3 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import path from 'path'
-import http from 'http'
-
 export default class HttpService {
   /**
    * [constructor description]
@@ -10,12 +5,12 @@ export default class HttpService {
    * @param  {[type]} options.staticFileDir [description]
    * @return {[type]}                       [description]
    */
-  constructor ({ HttpPort, StaticFileDir, LogService }) {
+  constructor ({ HttpPort, StaticFileDir, HttpServerProvider, HttpRouteProvider, LogService }) {
     this.port = HttpPort
     this.staticFileDir = StaticFileDir
     this.log = LogService
-    this.express = express()
-    this.server = http.Server(this.express)
+    this.express = HttpRouteProvider
+    this.server = HttpServerProvider.Server(this.express)
     this.instance = false
   }
 
@@ -28,13 +23,9 @@ export default class HttpService {
     this.log.debug('Starting HttpService...')
     return new Promise(resolve => {
       if (!this.instance) {
-        this.express.use(express.static(path.join(__dirname, `/../../${staticFileDir || this.staticFileDir}`)))
-        this.express.use(bodyParser.json())
-        this.express.use(bodyParser.urlencoded({ extended: false }))
-
         require('../routes')
-
         const portNumber = port || this.port
+
         this.instance = this.server.listen(portNumber, () => {
           this.log.info(`HttpService started, listening on ${portNumber}`)
           resolve(this.instance)
