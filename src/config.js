@@ -23,3 +23,7 @@ export const StaticFileDir = registerValue('StaticFileDir', process.env.STATIC_F
 export const TwilioAccountSid = registerValue('TwilioAccountSid', process.env.TWILIO_ACCOUNT_SID)
 export const TwilioAuthToken = registerValue('TwilioAuthToken', process.env.TWILIO_AUTH_TOKEN)
 export const SendgridApiKey = registerValue('SendgridApiKey', process.env.SENDGRID_API_KEY)
+export const UsePubnub = registerValue('UsePubnub', parseInt(process.env.USE_PUBNUB))
+export const PubnubPublishKey = registerValue('PubnubPublishKey', parseInt(process.env.PUBNUB_PUBLISH_KEY))
+export const PubnubSubscribeKey = registerValue('PubnubSubscribeKey', parseInt(process.env.PUBNUB_SUBSCRIBE_KEY))
+export const PubnubUuid = registerValue('PubnubUuid', parseInt(process.env.PUBNUB_UUID))
