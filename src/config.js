@@ -27,11 +27,13 @@ export const dependencyPaths = [
 // @SETUP: Determine order of dependency injection here
 export const serviceDependencyOrder = [
   // Services
+  'LogService',
   'MongoService',
   'HttpService',
   'SocketService',
   'SmsService',
-  'EmailService'
+  'EmailService',
+  'CloudService'
 ]
 
 dotenv.config()
