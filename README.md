@@ -12,3 +12,6 @@ A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
 * [Twilio](https://github.com/twilio/twilio-node) for SMS messaging.
 * [SendGrid](https://github.com/sendgrid/sendgrid-nodejs) for emailing.
 * [PubNub](https://github.com/pubnub/javascript) for sockets at scale.
+* [Airtable](https://github.com/airtable/airtable.js) as a business operations store.
+* [Rollbar](https://github.com/rollbar/rollbar.js) for logging.
+* [AWS](https://github.com/aws/aws-sdk-js) for cloud services.

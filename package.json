@@ -39,13 +39,16 @@
   },
   "dependencies": {
     "@sendgrid/client": "6.5.5",
+    "airtable": "^0.8.1",
     "awilix": "4.2.5",
+    "aws-sdk": "^2.647.0",
     "body-parser": "1.19.0",
     "dotenv": "8.2.0",
     "esm": "3.2.25",
     "express": "4.17.1",
     "mongoose": "5.9.5",
     "pubnub": "^4.27.4",
+    "rollbar": "^2.15.0",
     "socket.io": "2.3.0",
     "twilio": "3.41.1"
   }
