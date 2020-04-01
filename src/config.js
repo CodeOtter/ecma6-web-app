@@ -29,11 +29,12 @@ export const serviceDependencyOrder = [
   // Services
   'LogService',
   'MongoService',
-  'HttpService',
-  'SocketService',
   'SmsService',
   'EmailService',
-  'CloudService'
+  'CloudService',
+  'VideoStreamService',
+  'HttpService',
+  'SocketService'
 ]
 
 dotenv.config()
@@ -56,3 +57,5 @@ export const RollbarAccessToken = registerValue('RollbarAccessToken', process.en
 export const AwsAccessKeyId = registerValue('AwsAccessKeyId', process.env.AWS_ACCESS_KEY_ID)
 export const AwsSecretAccessKey = registerValue('AwsSecretAccessKey', process.env.AWS_SECRET_ACCESS_KEY)
 export const AwsSessionToken = registerValue('AwsSessionToken', process.env.AWS_SESSION_TOKEN)
+export const TokboxApiKey = registerValue('TokboxApiKey', process.env.TOKBOX_API_KEY)
+export const TokboxApiSecret = registerValue('TokboxApiSecret', process.env.TOKBOX_API_SECRET)
