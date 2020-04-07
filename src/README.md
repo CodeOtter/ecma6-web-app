@@ -5,4 +5,3 @@
 * `dependencies.js` is responsible for auto-loading class dependencies into the Awilix's application container.
 * `app.js` starts the AppService, which starts the application.
 * `index.js` is the bootstrp to start the application.
-* 
