@@ -5,13 +5,61 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run in Console (/src)",
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/src/index.js"
+            "program": "${workspaceFolder}/src/index.js",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "name": "yarn start",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": ["start"],
+            "port": 922,
+            "envFile": "${workspaceFolder}/.env",
+        },
+        {
+            "name": "npm run start",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run-script", "start"],
+            "port": 922,
+            "envFile": "${workspaceFolder}/.env",
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Debug in Brave (/src)",
+            "runtimeExecutable": "/usr/bin/brave-browser",
+            "port": 9222,
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/src"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Debug in Brave (/dist)",
+            "runtimeExecutable": "/usr/bin/brave-browser",
+            "port": 9222,
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/dist"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Debug in Brave (/build)",
+            "runtimeExecutable": "/usr/bin/brave-browser",
+            "port": 9222,
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/build"
         }
     ]
 }
