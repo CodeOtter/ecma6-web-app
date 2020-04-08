@@ -15,3 +15,12 @@ A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
 * [Airtable](https://github.com/airtable/airtable.js) as a business operations store.
 * [Rollbar](https://github.com/rollbar/rollbar.js) for logging.
 * [AWS](https://github.com/aws/aws-sdk-js) for cloud services.
+
+TODO
+
+* [Danger](https://danger.systems/js/)
+* [Synk](https://snyk.io/)
+* [Clinic](https://clinicjs.org/)
+* [Keystone](https://www.keystonejs.com/)
+* [Restify](http://restify.com/)
+* [Passport](http://www.passportjs.org/)
