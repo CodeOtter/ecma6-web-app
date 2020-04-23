@@ -1,5 +1,7 @@
 # ECMA6 Web App
 
+![Node.js CI](https://github.com/CodeOtter/ecma6-web-app/workflows/Node.js%20CI/badge.svg)
+
 A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
 
 * [Awilix](https://github.com/jeffijoe/awilix) for dependency injection

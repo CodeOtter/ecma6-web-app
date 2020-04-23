@@ -51,9 +51,10 @@
     "dotenv": "8.2.0",
     "esm": "3.2.25",
     "express": "4.17.1",
-    "mongoose": "5.9.5",
+    "mongoose": "5.9.10",
     "opentok": "2.9.2",
     "pubnub": "4.27.4",
+    "restify": "^8.5.1",
     "rollbar": "2.15.0",
     "socket.io": "2.3.0",
     "twilio": "3.41.1"
