@@ -15,12 +15,9 @@ A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
 * [Airtable](https://github.com/airtable/airtable.js) as a business operations store.
 * [Rollbar](https://github.com/rollbar/rollbar.js) for logging.
 * [AWS](https://github.com/aws/aws-sdk-js) for cloud services.
+* [Danger](https://danger.systems/js/) for pull request culture enforcement.
+* [Synk](https://snyk.io/) provides dependency vulnerability monitoring for this repo.
+* [Clinic](https://clinicjs.org/) gives insights on performance of the application.
 
-TODO
-
-* [Danger](https://danger.systems/js/)
-* [Synk](https://snyk.io/)
-* [Clinic](https://clinicjs.org/)
-* [Keystone](https://www.keystonejs.com/)
 * [Restify](http://restify.com/)
 * [Passport](http://www.passportjs.org/)
