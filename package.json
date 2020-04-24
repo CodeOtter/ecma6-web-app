@@ -52,6 +52,8 @@
     "esm": "3.2.25",
     "mongoose": "5.9.10",
     "opentok": "2.9.2",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "pubnub": "4.27.4",
     "restify": "^8.5.1",
     "rollbar": "2.15.0",

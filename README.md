@@ -20,5 +20,4 @@ A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
 * [Danger](https://danger.systems/js/) for pull request culture enforcement.
 * [Synk](https://snyk.io/) provides dependency vulnerability monitoring for this repo.
 * [Clinic](https://clinicjs.org/) gives insights on performance of the application.
-
-* [Passport](http://www.passportjs.org/)
+* [Passport](http://www.passportjs.org/) for authentication services.

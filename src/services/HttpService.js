@@ -5,11 +5,12 @@ export default class HttpService {
    * @param  {[type]} options.staticFileDir [description]
    * @return {[type]}                       [description]
    */
-  constructor ({ HttpPort, StaticFileDir, HttpRouteProvider, LogService }) {
+  constructor ({ HttpPort, StaticFileDir, HttpRouteProvider, AuthenticationProvider, LogService }) {
     this.port = HttpPort
     this.staticFileDir = StaticFileDir
     this.log = LogService
     this.router = HttpRouteProvider
+    this.getAuth = AuthenticationProvider
     this.instance = false
   }
 
