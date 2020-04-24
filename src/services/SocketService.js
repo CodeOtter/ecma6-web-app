@@ -21,7 +21,7 @@ export default class SocketService {
       if (this.usePubnub) {
         this.instance = this.scaledSocketProvider
       } else {
-        this.instance = this.socketProvider(this.http.server)
+        this.instance = this.socketProvider(this.http.router.server)
         this.log.debug('SocketService started.')
       }
     } else {

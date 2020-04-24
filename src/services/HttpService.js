@@ -5,12 +5,11 @@ export default class HttpService {
    * @param  {[type]} options.staticFileDir [description]
    * @return {[type]}                       [description]
    */
-  constructor ({ HttpPort, StaticFileDir, HttpServerProvider, HttpRouteProvider, LogService }) {
+  constructor ({ HttpPort, StaticFileDir, HttpRouteProvider, LogService }) {
     this.port = HttpPort
     this.staticFileDir = StaticFileDir
     this.log = LogService
-    this.express = HttpRouteProvider
-    this.server = HttpServerProvider.Server(this.express)
+    this.router = HttpRouteProvider
     this.instance = false
   }
 
@@ -19,14 +18,14 @@ export default class HttpService {
    * @param  {[type]} port [description]
    * @return {[type]}      [description]
    */
-  async start (port, staticFileDir) {
+  async start (port) {
     this.log.debug('Starting HttpService...')
     return new Promise(resolve => {
       if (!this.instance) {
         require('../routes')
         const portNumber = port || this.port
 
-        this.instance = this.server.listen(portNumber, () => {
+        this.instance = this.router.listen(portNumber, () => {
           this.log.info(`HttpService started, listening on ${portNumber}`)
           resolve(this.instance)
         })

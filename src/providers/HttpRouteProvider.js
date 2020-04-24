@@ -1,4 +1,3 @@
-import Express from 'express'
 import restify from 'restify'
 import bodyParser from 'body-parser'
 import path from 'path'
@@ -8,15 +7,18 @@ import path from 'path'
  * @param {[type]} options.StaticFileDir [description]
  */
 function HttpRouteProvider ({ StaticFileDir, LoggingProvider }) {
-  // const httpRest = restify.createServer()
-  const httpRest = Express()
+  const router = restify.createServer()
 
-  httpRest.use(Express.static(path.join(__dirname, `/../../${StaticFileDir}`)))
-  httpRest.use(bodyParser.json())
-  httpRest.use(LoggingProvider.errorHandler())
-  httpRest.use(bodyParser.urlencoded({ extended: false }))
+  router.get('/', restify.plugins.serveStatic({
+    directory: path.join(__dirname, `/../../${StaticFileDir}`),
+    default: 'index.html'
+  }))
 
-  return httpRest
+  router.use(bodyParser.json())
+  router.use(LoggingProvider.errorHandler())
+  router.use(bodyParser.urlencoded({ extended: false }))
+
+  return router
 }
 
 export default HttpRouteProvider

@@ -12,13 +12,14 @@ const log = resolve('LogService')
  * @param  {[type]} (err,       messages      [description]
  * @return {[type]}             [description]
  */
-http.express.get('/messages', (req, res) => {
+http.router.get('/messages', (req, res, next) => {
   Message.find({}, (err, messages) => {
     if (err) {
       log.error(err)
     }
 
     res.send(messages)
+    return next();
   })
 })
 
@@ -28,7 +29,7 @@ http.express.get('/messages', (req, res) => {
  * @param  {[type]} (req,       res)          [description]
  * @return {[type]}             [description]
  */
-http.express.post('/messages', (req, res) => {
+http.router.post('/messages', (req, res, next) => {
   const message = new Message(req.body)
   log.info(req.body)
   message.save((err) => {
@@ -38,5 +39,6 @@ http.express.post('/messages', (req, res) => {
       socket.instance.emit('message', req.body)
       res.sendStatus(200)
     }
+    return next();
   })
 })
