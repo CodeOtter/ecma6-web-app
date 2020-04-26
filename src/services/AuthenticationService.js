@@ -6,7 +6,6 @@ import MongoStoreFactory from 'connect-mongo'
 const MongoStore = new MongoStoreFactory(session)
 
 export default class AuthenticationService {
-
   /**
    * Constructor
    * @param {*} param
