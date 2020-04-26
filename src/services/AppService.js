@@ -30,9 +30,7 @@ export default class AppService {
       this.instances = {}
       for (const key of Object.keys(this.services)) {
         if (this.services[key].start) {
-          console.log('--', key)
           this.instances[key] = await this.services[key].start()
-          console.log('--', key)
         }
       }
     }

@@ -60,3 +60,4 @@ export const AwsSecretAccessKey = registerValue('AwsSecretAccessKey', process.en
 export const AwsSessionToken = registerValue('AwsSessionToken', process.env.AWS_SESSION_TOKEN)
 export const TokboxApiKey = registerValue('TokboxApiKey', process.env.TOKBOX_API_KEY)
 export const TokboxApiSecret = registerValue('TokboxApiSecret', process.env.TOKBOX_API_SECRET)
+export const CookieSecret = registerValue('CookieSecret', process.env.COOKIE_SECRET)
