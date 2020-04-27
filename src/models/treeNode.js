@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import { arrayToKeyPair } from '../actions/transform'
 const Schema = mongoose.Schema
 
-export const autoPopulate = (next) => {
+export function autoPopulate (next) {
   this.populate('children')
   this.populate('createdByAccount')
   this.populate('deletedByAccount')

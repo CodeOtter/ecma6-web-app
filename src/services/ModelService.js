@@ -74,7 +74,7 @@ export default class TreeService {
       accessor = accessor.lean()
     }
 
-    const result = await accessor()
+    const result = await accessor.exec()
     return result
   }
 
@@ -95,7 +95,7 @@ export default class TreeService {
       accessor = accessor.lean()
     }
 
-    const result = await accessor()
+    const result = await accessor.exec()
     return result
   }
 
@@ -121,7 +121,7 @@ export default class TreeService {
       accessor = accessor.lean()
     }
 
-    const result = await accessor()
+    const result = await accessor.exec()
     return result
   }
 }
