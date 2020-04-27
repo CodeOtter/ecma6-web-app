@@ -10,7 +10,7 @@ export const autoPopulate = (next) => {
 }
 
 const TreeNodeTypeList = [
-  'base'
+  'standard'
 ]
 export const TreeNodeTypes = arrayToKeyPair(TreeNodeTypeList)
 
@@ -24,22 +24,29 @@ export const TreeNodeSchema = new Schema({
     type: String,
     default: ''
   },
-  deletedAt: Date,
+  deletedAt: {
+    type: Date,
+    default: null
+  },
   type: {
     type: String,
-    enum: TreeNodeTypeList
+    enum: TreeNodeTypeList,
+    required: true
   },
   children: [{
     type: Schema.Types.ObjectId,
-    ref: 'TreeNode'
+    ref: 'TreeNode',
+    default: []
   }],
   createdByAccount: {
     type: Schema.Types.ObjectId,
-    ref: 'Account'
+    ref: 'Account',
+    required: true
   },
   deletedByAccount: {
     type: Schema.Types.ObjectId,
-    ref: 'Account'
+    ref: 'Account',
+    default: null
   }
 }, {
   strict: true
