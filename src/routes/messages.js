@@ -19,7 +19,7 @@ http.router.get('/messages', (req, res, next) => {
     }
 
     res.send(messages)
-    return next();
+    return next()
   })
 })
 
@@ -39,6 +39,6 @@ http.router.post('/messages', (req, res, next) => {
       socket.instance.emit('message', req.body)
       res.sendStatus(200)
     }
-    return next();
+    return next()
   })
 })

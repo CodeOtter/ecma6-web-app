@@ -66,7 +66,6 @@ export default class TreeService extends ModelService {
    * @param {TreeNode} fromTreeNode
    * @param {TreeNode} toTreeNode
    */
-
   async move (targetTreeNode, fromTreeNode, toTreeNode) {
     const index = fromTreeNode.children.indexOf(targetTreeNode)
     if (index === -1) {

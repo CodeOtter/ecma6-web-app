@@ -6,11 +6,9 @@ const TreeService = resolve('TreeService')
 const log = resolve('LogService')
 
 /**
- * [description]
- * @param  {[type]} '/messages' [description]
- * @param  {[type]} (req,       res)          [description]
- * @param  {[type]} (err,       messages      [description]
- * @return {[type]}             [description]
+ * Attaches a TreeNode as a child to another TreeNode
+ * @param {TreeNode} treeNodeParent
+ * @param {TreeNode} treeNodeChild
  */
 http.router.get('/trees/byId/:id', async (req, res) => {
   const id = req.getRoute().id
