@@ -5,7 +5,7 @@ A comprehensive ECMA6 boilerplate for modern NodeJS HTTP applications.
 ## Status
 
 * ![Node.js CI](https://github.com/CodeOtter/ecma6-web-app/workflows/Node.js%20CI/badge.svg)
-* [![Known Vulnerabilities](https://snyk.io/test/github/CodeOtter/ecma6-web-app/badge.svg?targetFile=package.json)](https://snyk.io/test/github/CodeOtter/ecma6-web-app?targetFile=package.json)
+* ![Known Vulnerabilities](https://snyk.io/test/github/CodeOtter/ecma6-web-app/badge.svg?targetFile=package.json)
 
 ## Features
 
