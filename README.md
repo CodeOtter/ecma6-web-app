@@ -1,8 +1,13 @@
 # ECMA6 Web App
 
-![Node.js CI](https://github.com/CodeOtter/ecma6-web-app/workflows/Node.js%20CI/badge.svg)
+A comprehensive ECMA6 boilerplate for modern NodeJS HTTP applications.
 
-A boilerplate for ECMA6 NodeJS web apps that uses the following technologies:
+## Status
+
+* ![Node.js CI](https://github.com/CodeOtter/ecma6-web-app/workflows/Node.js%20CI/badge.svg)
+* [![Known Vulnerabilities](https://snyk.io/test/github/CodeOtter/ecma6-web-app/badge.svg?targetFile=package.json)](https://snyk.io/test/github/CodeOtter/ecma6-web-app?targetFile=package.json)
+
+## Features
 
 * [Awilix](https://github.com/jeffijoe/awilix) for dependency injection.
 * [Restify](http://restify.com/) for routing HTTP requests.
