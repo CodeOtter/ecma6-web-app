@@ -62,3 +62,4 @@ export const TokboxApiKey = registerValue('TokboxApiKey', process.env.TOKBOX_API
 export const TokboxApiSecret = registerValue('TokboxApiSecret', process.env.TOKBOX_API_SECRET)
 export const CookieSecret = registerValue('CookieSecret', process.env.COOKIE_SECRET)
 export const MongoFindCount = registerValue('MongoFindCount', process.env.MONGO_FIND_COUNT)
+export const HttpHostUrl = registerValue('HttpHostUrl', process.env.HTTP_HOST_URL)
