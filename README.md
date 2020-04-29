@@ -16,6 +16,7 @@ A comprehensive ECMA6 boilerplate for modern NodeJS HTTP applications.
 * [Ava](https://github.com/avajs/ava) for parallel testing.
 * [ESM](https://github.com/standard-things/esm) for easy and Babel-less ECMA6 support for import/export.
 * [TestDouble](https://github.com/testdouble/testdouble.js) for easy mocking of dependencies.
+* [Mongo-Unit](https://github.com/mikhail-angelov/mongo-unit) for MongoDB unit testing.
 * [Twilio](https://github.com/twilio/twilio-node) for SMS messaging.
 * [SendGrid](https://github.com/sendgrid/sendgrid-nodejs) for emailing.
 * [PubNub](https://github.com/pubnub/javascript) for sockets at scale.

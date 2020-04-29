@@ -1,12 +1,22 @@
 const getProvider = require('../../../src/providers/MongoOrmProvider').default
 const td = require('testdouble')
+const mongoUnit = require('mongo-unit')
 
 const MongoOrmProvider = (options) => {
   const provider = getProvider(options)
+  const connect = provider.connect
 
-  // @SETUP: Add methods you need to mock for HttpService here
-  td.replace(provider, 'connect', (url, config, callback) => {
+  td.replace(provider, 'connect', async (url, config, callback) => {
+    await mongoUnit.start()
+    await connect(mongoUnit.getUrl(), {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
     callback()
+  })
+
+  td.replace(provider, 'close', async (callback) => {
+    return mongoUnit.stop()
   })
 
   return provider
