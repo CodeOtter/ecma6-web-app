@@ -2,6 +2,16 @@
 
 A comprehensive ECMA6 boilerplate for modern NodeJS HTTP applications.
 
+## Installation
+
+```bash
+git clone git@github.com:CodeOtter/ecma6-web-app.git
+rm -fr .git
+cd ecma6-web-app
+cp .env.sample .env
+yarn install
+```
+
 ## Status
 
 * ![Node.js CI](https://github.com/CodeOtter/ecma6-web-app/workflows/Node.js%20CI/badge.svg)
