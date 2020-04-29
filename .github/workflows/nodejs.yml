@@ -28,7 +28,7 @@ jobs:
       run: npm install -g yarn
     - name: Code Test
       run: |
-        yarn install
+        yarn install --frozen-lockfile
         yarn test
     - name: Danger
       run: yarn danger ci
