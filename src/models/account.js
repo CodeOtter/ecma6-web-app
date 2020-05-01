@@ -1,16 +1,21 @@
 import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
+function setDisplayName () {
+  return !this.displayName
+    ? this.name
+    : this.displayName
+}
+
 export const AccountSchema = new Schema({
-  _id: Schema.Types.ObjectId,
   name: {
     type: String,
     unique: true,
-    default: ''
+    required: true
   },
   displayName: {
     type: String,
-    default: ''
+    default: setDisplayName
   }
 }, {
   strict: true

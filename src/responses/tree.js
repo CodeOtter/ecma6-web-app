@@ -1,12 +1,11 @@
 import ResponseService from '../service/ResponseService'
+import { endpoint } from '../routes/trees'
+import { TreeNodeSchema } from '../models/treeNode'
 
-const TYPE = 'TreeNode'
-const ENDPOINT = 'treeNodes'
-
-const { single, many } = ResponseService.getTransformers(ENDPOINT, (instance) => {
+const { single, many } = ResponseService.getTransformers(endpoint, (instance) => {
   return {
     id: instance._id,
-    type: TYPE,
+    type: TreeNodeSchema.name,
     attributes: {
       name: instance.name,
       description: instance.description,

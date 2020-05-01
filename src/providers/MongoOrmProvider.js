@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
-
-mongoose.set('autoIndex', false)
+mongoose.set('useCreateIndex', true)
+mongoose.set('autoIndex', true)
 
 /**
  * [MongoOrmProvider description]

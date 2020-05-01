@@ -15,7 +15,6 @@ const TreeNodeTypeList = [
 export const TreeNodeTypes = arrayToKeyPair(TreeNodeTypeList)
 
 export const TreeNodeSchema = new Schema({
-  _id: Schema.Types.ObjectId,
   name: {
     type: String,
     default: ''
