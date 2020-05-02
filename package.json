@@ -47,7 +47,7 @@
     "@sendgrid/client": "6.5.5",
     "airtable": "0.8.1",
     "awilix": "4.2.5",
-    "aws-sdk": "2.647.0",
+    "aws-sdk": "2.655.0",
     "body-parser": "1.19.0",
     "connect-mongo": "3.2.0",
     "dotenv": "8.2.0",
