@@ -8,7 +8,9 @@
     "doctor": "./node_modules/.bin/clinic doctor -- node src/index.js",
     "flame": "./node_modules/.bin/clinic flame -- node src/index.js",
     "bubbleprof": "./node_modules/.bin/clinic bubbleprof -- node src/index.js",
-    "test": "ava"
+    "test": "ava",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "author": "",
   "license": "ISC",
@@ -61,6 +63,8 @@
     "restify": "8.5.1",
     "rollbar": "2.15.0",
     "socket.io": "2.3.0",
-    "twilio": "3.42.1"
-  }
+    "twilio": "3.42.1",
+    "snyk": "^1.316.2"
+  },
+  "snyk": true
 }
