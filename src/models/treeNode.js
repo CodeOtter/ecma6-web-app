@@ -32,11 +32,17 @@ export const TreeNodeSchema = new Schema({
     enum: TreeNodeTypeList,
     required: true
   },
+  parent: {
+    type: Schema.Types.ObjectId,
+    ref: 'TreeNode',
+    default: null
+  },/*
   children: [{
     type: Schema.Types.ObjectId,
     ref: 'TreeNode',
     default: []
   }],
+  */
   createdByAccount: {
     type: Schema.Types.ObjectId,
     ref: 'Account',
