@@ -7,14 +7,6 @@ export default class TreeService {
   }
 
   /**
-   * Saves a Model
-   * @param {Object} object
-   */
-  async save (object) {
-    return object.save()
-  }
-
-  /**
    * Creates a Model
    * @param {String} name
    * @param {String} description
@@ -33,9 +25,19 @@ export default class TreeService {
    * @param {Object} criteria
    */
   async update (id, criteria) {
+    const {
+      _id,
+      deletedAt,
+      deletedByAccount,
+      createdAt,
+      updatedAt,
+      createdByAccount,
+      ...actualUpdateCriteria
+    } = criteria
+
     const result = await this.model.updateOne({
       _id: id
-    }, criteria, {
+    }, actualUpdateCriteria, {
       new: true,
       strict: false
     })
@@ -50,7 +52,8 @@ export default class TreeService {
    */
   async delete (id, deletedByAccount) {
     const result = await this.model.findOneAndUpdate({
-      _id: id
+      _id: id,
+      deletedAt: null
     }, {
       deletedAt: Date.now(),
       deletedByAccount
@@ -79,13 +82,32 @@ export default class TreeService {
   }
 
   /**
+   * Returns a Model by ID
+   * @param {ObjectId} id
+   * @param {Boolean} readOnly
+   */
+  async getActive (id, readOnly = false) {
+    let accessor = this.model.findOne({
+      _id: id,
+      deletedAt: null
+    })
+
+    if (readOnly) {
+      accessor = accessor.lean()
+    }
+
+    const result = await accessor.exec()
+    return result
+  }
+
+  /**
    * Returns a list of all matching Models
    * @param {Object} criteria
    * @param {Number} skip
    * @param {Number} limit
    * @param {Boolean} readOnly
    */
-  async search (criteria = {}, skip = 0, limit = MongoFindCount, sort = {}, readOnly = false) {
+  async list (criteria = {}, skip = 0, limit = MongoFindCount, sort = {}, readOnly = false) {
     let accessor = this.model.find(criteria, null, {
       skip,
       limit
@@ -106,12 +128,10 @@ export default class TreeService {
    * @param {Number} limit
    * @param {Boolean} readOnly
    */
-  async list (criteria = {}, skip = 0, limit = MongoFindCount, sort = {}, readOnly = false) {
+  async listActive (criteria = {}, skip = 0, limit = MongoFindCount, sort = {}, readOnly = false) {
     let accessor = this.model.find({
       ...criteria,
-      deletedAt: {
-        $exists: false
-      }
+      deletedAt: null
     }, null, {
       skip,
       limit
