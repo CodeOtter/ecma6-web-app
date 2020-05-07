@@ -61,7 +61,7 @@
     "passport-local": "1.0.0",
     "pubnub": "4.27.4",
     "restify": "8.5.1",
-    "rollbar": "2.15.0",
+    "rollbar": "2.15.1",
     "socket.io": "2.3.0",
     "twilio": "3.42.1",
     "snyk": "1.316.2"
