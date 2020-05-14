@@ -56,7 +56,7 @@
     "esm": "3.2.25",
     "express-session": "1.17.1",
     "mongoose": "5.9.10",
-    "opentok": "2.9.2",
+    "opentok": "2.10.0",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
     "pubnub": "4.27.4",
