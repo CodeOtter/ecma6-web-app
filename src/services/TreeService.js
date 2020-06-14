@@ -76,8 +76,9 @@ async function aggregateWrapper (accessor, readOnly) {
 }
 
 export default class TreeService extends ModelService {
-  constructor ({ LogService }) {
+  constructor ({ LogService, MongoOrmProvider }) {
     super(LogService, TreeNodeModel)
+    this.orm = MongoOrmProvider
     this.log.debug('TreeService constructed')
   }
 
@@ -100,7 +101,7 @@ export default class TreeService extends ModelService {
   }
 
   async get (id, readOnly = false) {
-    const aggregate = getAggregate({ _id: id }, 1)
+    const aggregate = getAggregate({ _id: this.orm.Types.ObjectId(id) }, 1)
     return aggregateWrapper(aggregate, readOnly)
   }
 
@@ -111,7 +112,7 @@ export default class TreeService extends ModelService {
    */
   async attach (treeNodeParent, treeNodeChild) {
     treeNodeChild.parent = treeNodeParent._id
-    console.log('treeNodeChild', treeNodeChild)
+    // console.log('treeNodeChild', treeNodeChild)
     return treeNodeChild.save()
     /*
     treeNodeParent.children.push(treeNodeChild)

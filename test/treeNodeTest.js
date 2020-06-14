@@ -129,7 +129,7 @@ test.skip('Deleting a TreeNode', async t => {
   }), [])
 })
 
-test.skip('Attaching a TreeNode', async t => {
+test('Attaching a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
@@ -137,10 +137,9 @@ test.skip('Attaching a TreeNode', async t => {
   const child = await treeService.create('TreeNode Child 1', 'A sad treeNode', TreeNodeTypes.standard, alice)
 
   await treeService.attach(parent, child)
-
   const fetchedParent = await treeService.get(parent._id)
   const parentObject = fetchedParent.toObject()
-  console.log('parentObject', parentObject)
+  // console.log('parentObject', parentObject)
 
   t.is(parentObject.name, 'TreeNode Parent 1')
   t.is(parentObject.description, 'A lonely treeNode')
