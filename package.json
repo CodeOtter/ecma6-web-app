@@ -9,7 +9,7 @@
     "flame": "./node_modules/.bin/clinic flame -- node src/index.js",
     "bubbleprof": "./node_modules/.bin/clinic bubbleprof -- node src/index.js",
     "test": "ava",
-    "snyk-protect": "snyk protect",
+    "snyk-protect": "./node_modules/.bin/snyk protect",
     "prepublish": "npm run snyk-protect"
   },
   "author": "",
