@@ -191,3 +191,104 @@ test('Detaching a TreeNode', async t => {
   t.is(childObject.type, TreeNodeTypes.standard)
   t.is(childObject.createdByAccount._id.toString(), alice._id.toString())
 })
+
+test('Siblingify a TreeNode', async t => {
+  const treeService = t.context.treeService
+  const alice = t.context.alice
+
+  const parent = await treeService.create('TreeNode Parent 3', 'A lonely treeNode', TreeNodeTypes.standard, alice)
+  const child = await treeService.create('TreeNode Child 3', 'A sad treeNode', TreeNodeTypes.standard, alice)
+  
+  const parent2 = await treeService.create('TreeNode Parent 4', 'A lonely treeNode', TreeNodeTypes.standard, alice)
+  const child2 = await treeService.create('TreeNode Child 4', 'A sad treeNode', TreeNodeTypes.standard, alice)
+
+  await treeService.attach(parent, child)
+  await treeService.attach(parent2, child2)
+  await treeService.siblingify(child, child2)
+
+  const fetchedChild1 = await treeService.get(child._id)
+  const child1Object = fetchedChild1.toObject()
+
+  t.is(child1Object.name, 'TreeNode Child 3')
+  t.is(child1Object.description, 'A sad treeNode')
+  t.is(child1Object.deletedAt, null)
+  t.is(child1Object.ancestors.length, 1)
+  t.deepEqual(child1Object.ancestors[0]._id, parent2._id)
+  t.is(child1Object.deletedByAccount, null)
+  t.is(child1Object.type, TreeNodeTypes.standard)
+  t.is(child1Object.createdByAccount._id.toString(), alice._id.toString())
+
+  const fetchedChild2 = await treeService.get(child2._id)
+  const child2Object = fetchedChild2.toObject()
+
+  t.is(child2Object.name, 'TreeNode Child 4')
+  t.is(child2Object.description, 'A sad treeNode')
+  t.is(child2Object.deletedAt, null)
+  t.is(child2Object.ancestors.length, 1)
+  t.deepEqual(child2Object.ancestors[0]._id, parent2._id)
+  t.is(child2Object.deletedByAccount, null)
+  t.is(child2Object.type, TreeNodeTypes.standard)
+  t.is(child2Object.createdByAccount._id.toString(), alice._id.toString())
+})
+
+test('Move a TreeNode', async t => {
+  const treeService = t.context.treeService
+  const alice = t.context.alice
+
+  const parent = await treeService.create('TreeNode Parent 5', 'A lonely treeNode', TreeNodeTypes.standard, alice)
+  const child = await treeService.create('TreeNode Child 5', 'A sad treeNode', TreeNodeTypes.standard, alice)
+  
+  const parent2 = await treeService.create('TreeNode Parent 6', 'A lonely treeNode', TreeNodeTypes.standard, alice)
+  const child2 = await treeService.create('TreeNode Child 6', 'A sad treeNode', TreeNodeTypes.standard, alice)
+
+  await treeService.attach(parent, child)
+  await treeService.attach(parent2, child2)
+  await treeService.move(child, parent2)
+
+  const fetchedChild1 = await treeService.get(child._id)
+  const child1Object = fetchedChild1.toObject()
+
+  t.is(child1Object.name, 'TreeNode Child 5')
+  t.is(child1Object.description, 'A sad treeNode')
+  t.is(child1Object.deletedAt, null)
+  t.is(child1Object.ancestors.length, 1)
+  t.deepEqual(child1Object.ancestors[0]._id, parent2._id)
+  t.is(child1Object.deletedByAccount, null)
+  t.is(child1Object.type, TreeNodeTypes.standard)
+  t.is(child1Object.createdByAccount._id.toString(), alice._id.toString())
+
+  const fetchedChild2 = await treeService.get(child2._id)
+  const child2Object = fetchedChild2.toObject()
+
+  t.is(child2Object.name, 'TreeNode Child 6')
+  t.is(child2Object.description, 'A sad treeNode')
+  t.is(child2Object.deletedAt, null)
+  t.is(child2Object.ancestors.length, 1)
+  t.deepEqual(child2Object.ancestors[0]._id, parent2._id)
+  t.is(child2Object.deletedByAccount, null)
+  t.is(child2Object.type, TreeNodeTypes.standard)
+  t.is(child2Object.createdByAccount._id.toString(), alice._id.toString())
+})
+
+test('Copy a TreeNode', async t => {
+  const treeService = t.context.treeService
+  const alice = t.context.alice
+
+  const parent = await treeService.create('TreeNode Parent 7', 'A lonely treeNode', TreeNodeTypes.standard, alice)
+  const child = await treeService.create('TreeNode Child 7', 'A sad treeNode', TreeNodeTypes.standard, alice)
+
+  await treeService.attach(parent, child)
+  
+  const copiedChild = await treeService.copy(child, 'Copied Child', alice)
+
+  const fetchedCopy = await treeService.get(copiedChild._id)
+  const copyObject = fetchedCopy.toObject()
+
+  t.is(copyObject.name, 'Copied Child')
+  t.is(copyObject.description, 'A sad treeNode')
+  t.is(copyObject.deletedAt, null)
+  t.deepEqual(copyObject.ancestors[0]._id.toString(), child.ancestors[0]._id.toString())
+  t.is(copyObject.deletedByAccount, null)
+  t.is(copyObject.type, TreeNodeTypes.standard)
+  t.is(copyObject.createdByAccount._id.toString(), alice._id.toString())
+})

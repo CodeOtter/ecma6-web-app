@@ -131,7 +131,7 @@ export default class TreeService extends ModelService {
   async move (fromTreeNode, toTreeNode) {
     fromTreeNode.ancestors = toTreeNode.ancestors
     fromTreeNode.ancestors.push(toTreeNode._id)
-    return treeNode.save()
+    return fromTreeNode.save()
 
   }
 }
