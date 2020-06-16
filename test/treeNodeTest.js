@@ -13,7 +13,7 @@ test.before(async t => {
   }
 })
 
-test.skip('Creating a TreeNode', async t => {
+test('Creating a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
@@ -23,13 +23,13 @@ test.skip('Creating a TreeNode', async t => {
   t.is(treeNodeObject.name, 'TreeNode 1')
   t.is(treeNodeObject.description, 'A lone treeNode')
   t.is(treeNodeObject.deletedAt, null)
-  t.is(treeNodeObject.children.length, 0)
+  t.is(treeNodeObject.ancestors.length, 0)
   t.is(treeNodeObject.deletedByAccount, null)
   t.is(treeNodeObject.type, TreeNodeTypes.standard)
   t.is(treeNodeObject.createdByAccount._id.toString(), alice._id.toString())
 })
 
-test.skip('Getting a TreeNode', async t => {
+test('Getting a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
@@ -42,14 +42,13 @@ test.skip('Getting a TreeNode', async t => {
   t.is(treeNodeObject.name, 'TreeNode 2')
   t.is(treeNodeObject.description, 'Another lone treeNode')
   t.is(treeNodeObject.deletedAt, null)
-  t.is(treeNodeObject.parent, null)
-  // t.is(treeNodeObject.children.length, 0)
+  t.is(treeNodeObject.ancestors.length, 0)
   t.is(treeNodeObject.deletedByAccount, null)
   t.is(treeNodeObject.type, TreeNodeTypes.standard)
   t.is(treeNodeObject.createdByAccount._id.toString(), alice._id.toString())
 })
 
-test.skip('Listing Active TreeNodes', async t => {
+test('Listing Active TreeNodes', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
@@ -62,13 +61,13 @@ test.skip('Listing Active TreeNodes', async t => {
   t.is(treeNodeObject.name, 'TreeNode 3')
   t.is(treeNodeObject.description, 'More lone treeNodes')
   t.is(treeNodeObject.deletedAt, null)
-  t.is(treeNodeObject.children.length, 0)
+  t.is(treeNodeObject.ancestors.length, 0)
   t.is(treeNodeObject.deletedByAccount, null)
   t.is(treeNodeObject.type, TreeNodeTypes.standard)
   t.is(treeNodeObject.createdByAccount._id.toString(), alice._id.toString())
 })
 
-test.skip('Updating a TreeNode', async t => {
+test('Updating a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
@@ -84,13 +83,13 @@ test.skip('Updating a TreeNode', async t => {
   t.is(treeNodeObject.name, 'TreeNode 4')
   t.is(treeNodeObject.description, 'Wow I updated a treeNode')
   t.is(treeNodeObject.deletedAt, null)
-  t.is(treeNodeObject.children.length, 0)
+  t.is(treeNodeObject.ancestors.length, 0)
   t.is(treeNodeObject.deletedByAccount, null)
   t.is(treeNodeObject.type, TreeNodeTypes.standard)
   t.is(treeNodeObject.createdByAccount._id.toString(), alice._id.toString())
 })
 
-test.skip('Deleting a TreeNode', async t => {
+test('Deleting a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
@@ -104,7 +103,7 @@ test.skip('Deleting a TreeNode', async t => {
   t.is(treeNodeObject.name, 'TreeNode 5')
   t.is(treeNodeObject.description, 'A lot of lone treeNodes')
   t.is(treeNodeObject.deletedAt instanceof Date, true)
-  t.is(treeNodeObject.children.length, 0)
+  t.is(treeNodeObject.ancestors.length, 0)
   t.is(treeNodeObject.deletedByAccount._id.toString(), alice._id.toString())
   t.is(treeNodeObject.type, TreeNodeTypes.standard)
   t.is(treeNodeObject.createdByAccount._id.toString(), alice._id.toString())
@@ -118,7 +117,7 @@ test.skip('Deleting a TreeNode', async t => {
   t.is(listNodeObject.name, 'TreeNode 5')
   t.is(listNodeObject.description, 'A lot of lone treeNodes')
   t.is(listNodeObject.deletedAt instanceof Date, true)
-  t.is(listNodeObject.children.length, 0)
+  t.is(listNodeObject.ancestors.length, 0)
   t.is(listNodeObject.deletedByAccount._id.toString(), alice._id.toString())
   t.is(listNodeObject.type, TreeNodeTypes.standard)
   t.is(listNodeObject.createdByAccount._id.toString(), alice._id.toString())
@@ -139,26 +138,28 @@ test('Attaching a TreeNode', async t => {
   await treeService.attach(parent, child)
   const fetchedParent = await treeService.get(parent._id)
   const parentObject = fetchedParent.toObject()
-  // console.log('parentObject', parentObject)
-
+  const fetchedChild = await treeService.get(child._id)
+  const childObject = fetchedChild.toObject()
+  
   t.is(parentObject.name, 'TreeNode Parent 1')
   t.is(parentObject.description, 'A lonely treeNode')
   t.is(parentObject.deletedAt, null)
-  t.is(parentObject.children.length, 1)
+  t.is(parentObject.ancestors.length, 0)
   t.is(parentObject.deletedByAccount, null)
   t.is(parentObject.type, TreeNodeTypes.standard)
   t.is(parentObject.createdByAccount._id.toString(), alice._id.toString())
 
-  t.is(parentObject.children[0].name, 'TreeNode Child 1')
-  t.is(parentObject.children[0].description, 'A sad treeNode')
-  t.is(parentObject.children[0].deletedAt, null)
-  t.is(parentObject.children[0].children.length, 0)
-  t.is(parentObject.children[0].deletedByAccount, null)
-  t.is(parentObject.children[0].type, TreeNodeTypes.standard)
-  t.is(parentObject.children[0].createdByAccount._id.toString(), alice._id.toString())
+  t.is(childObject.ancestors.length, 1)
+  t.is(childObject.ancestors[0].name, 'TreeNode Parent 1')
+  t.is(childObject.ancestors[0].description, 'A lonely treeNode')
+  t.is(childObject.ancestors[0].deletedAt, null)
+  t.is(childObject.ancestors[0].ancestors.length, 0)
+  t.is(childObject.ancestors[0].deletedByAccount, null)
+  t.is(childObject.ancestors[0].type, TreeNodeTypes.standard)
+  t.is(childObject.ancestors[0].createdByAccount._id.toString(), alice._id.toString())
 })
 
-test.skip('Detaching a TreeNode', async t => {
+test('Detaching a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
@@ -174,7 +175,7 @@ test.skip('Detaching a TreeNode', async t => {
   t.is(parentObject.name, 'TreeNode Parent 2')
   t.is(parentObject.description, 'A lonely treeNode')
   t.is(parentObject.deletedAt, null)
-  t.is(parentObject.children.length, 0)
+  t.is(parentObject.ancestors.length, 0)
   t.is(parentObject.deletedByAccount, null)
   t.is(parentObject.type, TreeNodeTypes.standard)
   t.is(parentObject.createdByAccount._id.toString(), alice._id.toString())
@@ -185,7 +186,7 @@ test.skip('Detaching a TreeNode', async t => {
   t.is(childObject.name, 'TreeNode Child 2')
   t.is(childObject.description, 'A sad treeNode')
   t.is(childObject.deletedAt, null)
-  t.is(childObject.children.length, 0)
+  t.is(childObject.ancestors.length, 0)
   t.is(childObject.deletedByAccount, null)
   t.is(childObject.type, TreeNodeTypes.standard)
   t.is(childObject.createdByAccount._id.toString(), alice._id.toString())

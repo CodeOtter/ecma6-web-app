@@ -1,77 +1,50 @@
 import ModelService from './ModelService'
 import TreeNodeModel from '../models/treeNode'
-import AccountModel from '../models/account'
-import { flattenTree } from '../actions/transform'
 
-const projection = {
-  name: 1,
-  description: 1,
-  deletedAt: 1,
-  type: 1,
-  parent: 1,
-  createdByAccount: 1,
-  deletedByAccount: 1
-}
+/**
+ * 
+ * @param {*} ancestors 
+ */
+function mapAncestors (ancestors) {
+  if (typeof ancestors === 'string') {
+    // Convert strings
+    if (ancestors.indexOf(',') > -1) {
+      return [this.orm.Types.ObjectId(ancestors)]
+    } else {
+      return ancestors.split(',').map(this.orm.Types.ObjectId)
+    }
+  } else if (ancestors instanceof Array) {
+    // Convert array of objects to just their IDs
+    const formattedAncestors = []
 
-function getAggregate (criteria, limit) {
-  return TreeNodeModel.aggregate([
-    { $limit: limit },
-    { $match: criteria },
-    {
-      $lookup: {
-        from: 'accounts',
-        localField: 'createdByAccount',
-        foreignField: '_id',
-        as: 'createdByAccount'
-      }
-    },
-    {
-      $lookup: {
-        from: 'accounts',
-        localField: 'deletedByAccount',
-        foreignField: '_id',
-        as: 'deletedByAccount'
-      }
-    },
-    {
-      $graphLookup: {
-        from: 'treeNodes',
-        startWith: '$parent',
-        connectFromField: 'parent',
-        connectToField: '_id',
-        as: 'children'
-      }
-    },
-    {
-      $project: {
-        ...projection,
-        children: 1,
-        createdByAccount: { $arrayElemAt: ['$createdByAccount', 0] },
-        deletedByAccount: { $arrayElemAt: ['$deletedByAccount', 0] }
+    for (const ancestor of ancestors) {
+      if (ancestor._id) {
+        formattedAncestors.push(ancestor)
+      } else {
+        formattedAncestors.push(this.orm.Types.ObjectId(ancestor))
       }
     }
-  ])
-}
 
-async function aggregateWrapper (accessor, readOnly) {
-  if (!readOnly) {
-    const aggregate = await accessor.exec()
-    console.log('aggregate', aggregate)
-    const result = new TreeNodeModel(aggregate[0])
+    return formattedAncestors
+  } else if (typeof ancestors === 'object' && ancestors.ancestors){
+    // Take the ancestors of the ancestor
+    const formattedAncestors = []
 
-    const createdByAccount = aggregate[0].createdByAccount
-      ? new AccountModel(aggregate[0].createdByAccount)
-      : null
-    const deletedByAccount = aggregate[0].deletedByAccount
-      ? new AccountModel(aggregate[0].deletedByAccount)
-      : null
+    for (const ancestor of ancestors.ancestors) {
+      if (ancestor._id) {
+        formattedAncestors.push(ancestor)
+      } else {
+        formattedAncestors.push(this.orm.Types.ObjectId(ancestor))
+      }
+    }
 
-    result.createdByAccount = createdByAccount
-    result.deletedByAccount = deletedByAccount
-
-    return result
-  } else {
-    return accessor.exec()
+    if (typeof ancestors._id === 'object') {
+      formattedAncestors.push(ancestors._id)
+    } else {
+      formattedAncestors.push(this.orm.Types.ObjectId(ancestors._id))
+    }
+    
+    return formattedAncestors
   }
 }
 
@@ -90,19 +63,14 @@ export default class TreeService extends ModelService {
    * @param {Account} createdByAccount
    * @param {TreeNode[]} children
    */
-  async create (name, description, type, createdByAccount, children) {
+  async create (name, description, type, createdByAccount, ancestors) {
     return super.create({
       name,
       description,
       type,
-      children,
+      ancestors: mapAncestors(ancestors),
       createdByAccount
     })
-  }
-
-  async get (id, readOnly = false) {
-    const aggregate = getAggregate({ _id: this.orm.Types.ObjectId(id) }, 1)
-    return aggregateWrapper(aggregate, readOnly)
   }
 
   /**
@@ -111,17 +79,8 @@ export default class TreeService extends ModelService {
    * @param {TreeNode} treeNodeChild
    */
   async attach (treeNodeParent, treeNodeChild) {
-    treeNodeChild.parent = treeNodeParent._id
-    // console.log('treeNodeChild', treeNodeChild)
+    treeNodeChild.ancestors = mapAncestors(treeNodeParent)
     return treeNodeChild.save()
-    /*
-    treeNodeParent.children.push(treeNodeChild)
-    await treeNodeParent.save()
-    await TreeNodeModel.deleteOne({
-      _id: treeNodeChild._id
-    })
-    return true
-    */
   }
 
   /**
@@ -130,75 +89,49 @@ export default class TreeService extends ModelService {
    * @param {TreeNode} treeNodeChild
    */
   async detach (treeNodeParent, treeNodeChild) {
-    const record = treeNodeParent.children.pull({
-      _id: treeNodeChild._id
-    })
+    const indexOf = treeNodeChild.ancestors.findIndex(ancestor => 
+      ancestor._id === treeNodeParent || ancestor._id === treeNodeParent._id
+    )
 
-    if (record) {
-      record.remove()
-      await treeNodeParent.save()
-      return treeNodeChild.save()
+    if (indexOf > -1) {
+      treeNodeChild.ancestors.splice(indexOf)
     } else {
       return false
     }
+    return treeNodeChild.save()
   }
 
   /**
-   * Copies a TreeNode child from one TreeNode to another
+   * Makes a TreeNode a sibling of another
    * @param {TreeNode} targetTreeNode
    * @param {TreeNode} fromTreeNode
    * @param {TreeNode} toTreeNode
    */
-  async copy (targetTreeNode, fromTreeNode, toTreeNode) {
-    const index = fromTreeNode.children.indexOf(targetTreeNode)
-
-    if (index === -1) {
-      return false
-    }
-
-    toTreeNode.children.push(targetTreeNode)
-
-    await toTreeNode.save()
-
-    return {
-      target: targetTreeNode,
-      from: fromTreeNode,
-      to: toTreeNode
-    }
+  async siblingify (treeNode, ofTreeNode) {
+    treeNode.ancestors = ofTreeNode.ancestors
+    return treeNode.save()
   }
 
   /**
-   * Moves a TreeNode child from one TreeNode to another
+   * Copy a node
+   * @param {*} treeNode 
+   * @param {*} newName 
+   * @param {*} createdByAccount 
+   */
+  async copy (treeNode, newName, createdByAccount) {
+    return this.create(newName, treeNode.description, treeNode.type, createdByAccount, treeNode.ancestors)
+  }
+
+  /**
+   * Moves a TreeNode to be a child of a TreeNode
    * @param {TreeNode} targetTreeNode
    * @param {TreeNode} fromTreeNode
    * @param {TreeNode} toTreeNode
    */
-  async move (targetTreeNode, fromTreeNode, toTreeNode) {
-    const index = fromTreeNode.children.indexOf(targetTreeNode)
-    if (index === -1) {
-      return false
-    }
+  async move (fromTreeNode, toTreeNode) {
+    fromTreeNode.ancestors = toTreeNode.ancestors
+    fromTreeNode.ancestors.push(toTreeNode._id)
+    return treeNode.save()
 
-    fromTreeNode.splice(index, 1)
-    toTreeNode.children.push(targetTreeNode)
-
-    await fromTreeNode.save()
-    await toTreeNode.save()
-
-    return {
-      target: targetTreeNode,
-      from: fromTreeNode,
-      to: toTreeNode
-    }
-  }
-
-  /**
-   * Gets a list of all TreeNode children IDs
-   * @param {*} id
-   */
-  async getTreeIdMap (id) {
-    const tree = await TreeNodeModel.findById(id).lean()
-    const result = flattenTree(tree, 'children', '_id')
-    return result
   }
 }
