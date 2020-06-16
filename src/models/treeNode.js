@@ -32,6 +32,10 @@ export const TreeNodeSchema = new Schema({
     enum: TreeNodeTypeList,
     required: true
   },
+  meta: {
+    type: Map,
+    of: Buffer
+  },
   ancestors: [{
     type: Schema.Types.ObjectId,
     ref: 'TreeNode',

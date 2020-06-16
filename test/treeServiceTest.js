@@ -48,17 +48,43 @@ test('Getting a TreeNode', async t => {
   t.is(treeNodeObject.createdByAccount._id.toString(), alice._id.toString())
 })
 
-test('Listing Active TreeNodes', async t => {
+test('Searching Active TreeNodes', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
   await treeService.create('TreeNode 3', 'More lone treeNodes', TreeNodeTypes.standard, alice)
+
   const treeNodes = await treeService.listActive({
     name: 'TreeNode 3'
   })
   const treeNodeObject = treeNodes[0].toObject()
 
   t.is(treeNodeObject.name, 'TreeNode 3')
+  t.is(treeNodeObject.description, 'More lone treeNodes')
+  t.is(treeNodeObject.deletedAt, null)
+  t.is(treeNodeObject.ancestors.length, 0)
+  t.is(treeNodeObject.deletedByAccount, null)
+  t.is(treeNodeObject.type, TreeNodeTypes.standard)
+  t.is(treeNodeObject.createdByAccount._id.toString(), alice._id.toString())
+})
+
+test('Listing Active TreeNodes', async t => {
+  const treeService = t.context.treeService
+  const alice = t.context.alice
+
+  const createdTreeNode = await treeService.create('TreeNode 3.1', 'More lone treeNodes', TreeNodeTypes.standard, alice)
+  const createdTreeNodeId = createdTreeNode._id.toString()
+
+  const treeNode = await treeService.create('TreeNode 3.2', 'Another lone treeNodes', TreeNodeTypes.standard, alice)
+  const deletedTreeNodeId = treeNode._id.toString()
+  await treeService.delete(deletedTreeNodeId, alice)
+
+  const treeNodes = await treeService.listActive()
+  const index = treeNodes.findIndex(node => node._id.toString() === createdTreeNodeId)
+  const treeNodeObject = treeNodes[index].toObject()
+  
+  t.is(treeNodes.findIndex(node => node._id.toString() === deletedTreeNodeId) > -1, false)
+  t.is(treeNodeObject.name, 'TreeNode 3.1')
   t.is(treeNodeObject.description, 'More lone treeNodes')
   t.is(treeNodeObject.deletedAt, null)
   t.is(treeNodeObject.ancestors.length, 0)
@@ -291,4 +317,40 @@ test('Copy a TreeNode', async t => {
   t.is(copyObject.deletedByAccount, null)
   t.is(copyObject.type, TreeNodeTypes.standard)
   t.is(copyObject.createdByAccount._id.toString(), alice._id.toString())
+})
+
+test('inheriting TreeNode Meta', async t => {
+  const treeService = t.context.treeService
+  const alice = t.context.alice
+
+  const parent = await treeService.create('TreeNode Parent 8', 'A lonely treeNode', TreeNodeTypes.standard, alice, undefined, {
+    canWrite: [1],
+    canRead: [0],
+    canDelete: [1],
+    typeAccess: [1, 1, 0, 5]
+  })
+  const child = await treeService.create('TreeNode Child 8', 'A sad treeNode', TreeNodeTypes.standard, alice, undefined, {
+    canRead: [1],
+    typeAccess: [0, 2, 1, 0, 0, 6]
+  })
+  const nextChild = await treeService.create('TreeNode Next  8', 'A distant treeNode', TreeNodeTypes.standard, alice, undefined, {
+    canWrite: [0]
+  })
+
+  await treeService.attach(parent, child)
+  await treeService.attach(child, nextChild)
+
+  const meta = await treeService.inheritMeta(nextChild)
+
+  t.is(meta.get('canWrite')[0], 1)
+  t.is(meta.get('canRead')[0], 1)
+  t.is(meta.get('canDelete')[0], 1)
+  t.is(meta.get('typeAccess')[0], 1)
+  t.is(meta.get('typeAccess')[1], 2)
+  t.is(meta.get('typeAccess')[2], 1)
+  t.is(meta.get('typeAccess')[3], 5)
+  t.is(meta.get('typeAccess')[4], 0)
+  t.is(meta.get('typeAccess')[5], 6)
+
+  t.is(await treeService.hasMeta(nextChild, 'typeAccess', 5, 6), true)
 })
