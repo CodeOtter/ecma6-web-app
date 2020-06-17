@@ -49,9 +49,10 @@ function mapAncestors (ancestors) {
 }
 
 export default class TreeService extends ModelService {
-  constructor ({ LogService, MongoOrmProvider }) {
+  constructor ({ LogService, MongoOrmProvider, AuthorizationService }) {
     super(LogService, TreeNodeModel)
     this.orm = MongoOrmProvider
+    this.auth = AuthorizationService
     this.log.debug('TreeService constructed')
   }
 
@@ -63,7 +64,8 @@ export default class TreeService extends ModelService {
    * @param {Account} createdByAccount
    * @param {TreeNode[]} children
    */
-  async create (name, description, type, createdByAccount, ancestors, meta) {
+  async create ({ name, description, type, createdByAccount, ancestors, meta }) {
+
     if (!(meta instanceof Map)) {
       if (typeof meta === 'object') {
         meta = new Map(Object.entries(meta))
@@ -84,7 +86,7 @@ export default class TreeService extends ModelService {
       type,
       ancestors: mapAncestors(ancestors),
       createdByAccount,
-      meta
+      meta: this.auth.getPermissionsFromJson(meta)
     })
   }
 
@@ -134,7 +136,14 @@ export default class TreeService extends ModelService {
    * @param {*} createdByAccount 
    */
   async copy (treeNode, newName, createdByAccount) {
-    return this.create(newName, treeNode.description, treeNode.type, createdByAccount, treeNode.ancestors, treeNode.meta)
+    return this.create({
+      name: newName,
+      description: treeNode.description,
+      type: treeNode.type,
+      createdByAccount,
+      ancestors: treeNode.ancestors,
+      meta: treeNode.meta
+    })
   }
 
   /**
@@ -158,7 +167,12 @@ export default class TreeService extends ModelService {
    */
   async hasMeta (treeNode, name, slot, value, meta) {
     const inheritedMeta = await this.inheritMeta(treeNode, meta)
-    return inheritedMeta.get(name)[slot] === value
+    const topic = inheritedMeta.get(name)
+    if (!topic) {
+      return false
+    }
+
+    return topic[slot] === value
   }
 
   /**

@@ -29,6 +29,7 @@ export const serviceDependencyOrder = [
   // Services
   'LogService',
   'MongoService',
+  'AuthorizationService',
   'AuthenticationService',
   'SmsService',
   'EmailService',

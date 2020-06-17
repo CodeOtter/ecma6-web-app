@@ -7,9 +7,9 @@ test.before(async t => {
     mongoDb: await resolve('MongoService').start(),
     accountService: resolve('AccountService'),
     treeService: resolve('TreeService'),
-    alice: await resolve('AccountService').create('Alice'),
-    bob: await resolve('AccountService').create('Bob'),
-    carol: await resolve('AccountService').create('Carol')
+    alice: await resolve('AccountService').create({ name: 'Alice' }),
+    bob: await resolve('AccountService').create({ name: 'Bob' }),
+    carol: await resolve('AccountService').create({ name: 'Carol' })
   }
 })
 
@@ -17,7 +17,12 @@ test('Creating a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const treeNode = await treeService.create('TreeNode 1', 'A lone treeNode', TreeNodeTypes.standard, alice)
+  const treeNode = await treeService.create({
+    name: 'TreeNode 1', 
+    description: 'A lone treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
   const treeNodeObject = treeNode.toObject()
 
   t.is(treeNodeObject.name, 'TreeNode 1')
@@ -33,7 +38,12 @@ test('Getting a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const treeNode = await treeService.create('TreeNode 2', 'Another lone treeNode', TreeNodeTypes.standard, alice)
+  const treeNode = await treeService.create({
+    name: 'TreeNode 2', 
+    description: 'Another lone treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
 
   const fetchedTreeNode = await treeService.get(treeNode._id)
 
@@ -52,7 +62,12 @@ test('Searching Active TreeNodes', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  await treeService.create('TreeNode 3', 'More lone treeNodes', TreeNodeTypes.standard, alice)
+  await treeService.create({
+    name: 'TreeNode 3', 
+    description: 'More lone treeNodes',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
 
   const treeNodes = await treeService.listActive({
     name: 'TreeNode 3'
@@ -72,10 +87,21 @@ test('Listing Active TreeNodes', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const createdTreeNode = await treeService.create('TreeNode 3.1', 'More lone treeNodes', TreeNodeTypes.standard, alice)
+  const createdTreeNode = await treeService.create({
+    name: 'TreeNode 3.1', 
+    description: 'More lone treeNodes',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
   const createdTreeNodeId = createdTreeNode._id.toString()
 
-  const treeNode = await treeService.create('TreeNode 3.2', 'Another lone treeNodes', TreeNodeTypes.standard, alice)
+  const treeNode = await treeService.create({
+    name: 'TreeNode 3.2', 
+    description: 'Another lone treeNodes',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+
   const deletedTreeNodeId = treeNode._id.toString()
   await treeService.delete(deletedTreeNodeId, alice)
 
@@ -97,7 +123,12 @@ test('Updating a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const treeNode = await treeService.create('TreeNode 4', 'A lot of lone treeNodes', TreeNodeTypes.standard, alice)
+  const treeNode = await treeService.create({
+    name: 'TreeNode 4', 
+    description: 'A lot of lone treeNodes',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
   await treeService.update(treeNode._id, {
     description: 'Wow I updated a treeNode'
   })
@@ -119,7 +150,12 @@ test('Deleting a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const treeNode = await treeService.create('TreeNode 5', 'A lot of lone treeNodes', TreeNodeTypes.standard, alice)
+  const treeNode = await treeService.create({
+    name: 'TreeNode 5', 
+    description: 'A lot of lone treeNodes',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
   await treeService.delete(treeNode._id, alice)
 
   const fetchedTreeNode = await treeService.get(treeNode._id)
@@ -158,8 +194,18 @@ test('Attaching a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const parent = await treeService.create('TreeNode Parent 1', 'A lonely treeNode', TreeNodeTypes.standard, alice)
-  const child = await treeService.create('TreeNode Child 1', 'A sad treeNode', TreeNodeTypes.standard, alice)
+  const parent = await treeService.create({
+    name: 'TreeNode Parent 1', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+  const child = await treeService.create({
+    name: 'TreeNode Child 1', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
 
   await treeService.attach(parent, child)
   const fetchedParent = await treeService.get(parent._id)
@@ -189,8 +235,18 @@ test('Detaching a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const parent = await treeService.create('TreeNode Parent 2', 'A lonely treeNode', TreeNodeTypes.standard, alice)
-  const child = await treeService.create('TreeNode Child 2', 'A sad treeNode', TreeNodeTypes.standard, alice)
+  const parent = await treeService.create({
+    name: 'TreeNode Parent 2', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+  const child = await treeService.create({
+    name: 'TreeNode Child 2', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
 
   await treeService.attach(parent, child)
   await treeService.detach(parent, child)
@@ -222,11 +278,31 @@ test('Siblingify a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const parent = await treeService.create('TreeNode Parent 3', 'A lonely treeNode', TreeNodeTypes.standard, alice)
-  const child = await treeService.create('TreeNode Child 3', 'A sad treeNode', TreeNodeTypes.standard, alice)
-  
-  const parent2 = await treeService.create('TreeNode Parent 4', 'A lonely treeNode', TreeNodeTypes.standard, alice)
-  const child2 = await treeService.create('TreeNode Child 4', 'A sad treeNode', TreeNodeTypes.standard, alice)
+  const parent = await treeService.create({
+    name: 'TreeNode Parent 3', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+  const child = await treeService.create({
+    name: 'TreeNode Child 3', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+
+  const parent2 = await treeService.create({
+    name: 'TreeNode Parent 4', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+  const child2 = await treeService.create({
+    name: 'TreeNode Child 4', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
 
   await treeService.attach(parent, child)
   await treeService.attach(parent2, child2)
@@ -261,11 +337,31 @@ test('Move a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const parent = await treeService.create('TreeNode Parent 5', 'A lonely treeNode', TreeNodeTypes.standard, alice)
-  const child = await treeService.create('TreeNode Child 5', 'A sad treeNode', TreeNodeTypes.standard, alice)
-  
-  const parent2 = await treeService.create('TreeNode Parent 6', 'A lonely treeNode', TreeNodeTypes.standard, alice)
-  const child2 = await treeService.create('TreeNode Child 6', 'A sad treeNode', TreeNodeTypes.standard, alice)
+  const parent = await treeService.create({
+    name: 'TreeNode Parent 5', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+  const child = await treeService.create({
+    name: 'TreeNode Child 5', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+
+  const parent2 = await treeService.create({
+    name: 'TreeNode Parent 6', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+  const child2 = await treeService.create({
+    name: 'TreeNode Child 6', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
 
   await treeService.attach(parent, child)
   await treeService.attach(parent2, child2)
@@ -300,8 +396,18 @@ test('Copy a TreeNode', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const parent = await treeService.create('TreeNode Parent 7', 'A lonely treeNode', TreeNodeTypes.standard, alice)
-  const child = await treeService.create('TreeNode Child 7', 'A sad treeNode', TreeNodeTypes.standard, alice)
+  const parent = await treeService.create({
+    name: 'TreeNode Parent 7', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
+  const child = await treeService.create({
+    name: 'TreeNode Child 7', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice
+  })
 
   await treeService.attach(parent, child)
   
@@ -323,18 +429,36 @@ test('inheriting TreeNode Meta', async t => {
   const treeService = t.context.treeService
   const alice = t.context.alice
 
-  const parent = await treeService.create('TreeNode Parent 8', 'A lonely treeNode', TreeNodeTypes.standard, alice, undefined, {
-    canWrite: [1],
-    canRead: [0],
-    canDelete: [1],
-    typeAccess: [1, 1, 0, 5]
+  const parent = await treeService.create({
+    name: 'TreeNode Parent 8', 
+    description: 'A lonely treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice,
+    meta: {
+      canWrite: [1],
+      canRead: [0],
+      canDelete: [1],
+      typeAccess: [1, 1, 0, 5]
+    }
   })
-  const child = await treeService.create('TreeNode Child 8', 'A sad treeNode', TreeNodeTypes.standard, alice, undefined, {
-    canRead: [1],
-    typeAccess: [0, 2, 1, 0, 0, 6]
+  const child = await treeService.create({
+    name: 'TreeNode Child 8', 
+    description: 'A sad treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice,
+      meta: {
+      canRead: [1],
+      typeAccess: [0, 2, 1, 0, 0, 6]
+      }
   })
-  const nextChild = await treeService.create('TreeNode Next  8', 'A distant treeNode', TreeNodeTypes.standard, alice, undefined, {
-    canWrite: [0]
+  const nextChild = await treeService.create({
+    name: 'TreeNode Next  8', 
+    description: 'A distant treeNode',
+    type: TreeNodeTypes.standard,
+    createdByAccount: alice,
+    meta: {
+      canWrite: [0]
+    }
   })
 
   await treeService.attach(parent, child)

@@ -79,8 +79,9 @@ export default class AuthenticationService {
    * getStrategy
    * @param {*} getUserByUsername
    * @param {*} validatePassword
+   * @param {*} isAuthorized
    */
-  getLocal (getUserByUsername, validatePassword) {
-    return this.authenticators.local(getUserByUsername, validatePassword)
+  getLocal (getUserByUsername, validatePassword, isAuthorized) {
+       return this.authenticators.local(getUserByUsername, validatePassword, isAuthorized)
   }
 }

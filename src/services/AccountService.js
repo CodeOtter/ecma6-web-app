@@ -2,8 +2,9 @@ import ModelService from './ModelService'
 import AccountModel from '../models/account'
 
 export default class AccountService extends ModelService {
-  constructor ({ LogService }) {
+  constructor ({ LogService, AuthorizationService }) {
     super(LogService, AccountModel)
+    this.auth = AuthorizationService
     this.log.debug('AccountService constructed')
   }
 
@@ -13,10 +14,14 @@ export default class AccountService extends ModelService {
    * @param {String} displayName
    * @param {Account[]} children
    */
-  async create (name, displayName) {
+  async create ({ name, displayName, status, createdByAccount, roles, permissions }) {
     return super.create({
       name,
-      displayName
+      displayName,
+      status,
+      createdByAccount,
+      roles,
+      permissions: this.auth.getPermissionsFromJson(permissions)
     })
   }
 }

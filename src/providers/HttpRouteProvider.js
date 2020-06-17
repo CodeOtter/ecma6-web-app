@@ -14,7 +14,7 @@ function HttpRouteProvider ({ StaticFileDir, LoggingProvider }) {
     default: 'index.html'
   }))
 
-  router.use(bodyParser.json())
+  router.use(restify.plugins.jsonp())
   router.use(LoggingProvider.errorHandler())
   router.use(bodyParser.urlencoded({ extended: false }))
 
