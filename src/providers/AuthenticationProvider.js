@@ -2,11 +2,12 @@ import { Strategy } from 'passport-local'
 
 const LocalStrategy = Strategy.LocalStrategy
 
-const local = (getUserByUsername, validatePassword, isAuthorized) => {
+const local = (getUserByUsername, validatePassword, isAuthorized, log) => {
+  log('---> return local strategy')
   return new LocalStrategy(
     async function (username, password, done) {
       let account
-
+      log('fuck is this')
       try {
         account = await getUserByUsername(username)
       } catch (e) {

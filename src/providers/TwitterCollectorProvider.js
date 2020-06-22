@@ -1,10 +1,10 @@
 /**
  * [OcrProvider description]
  */
-function TWitterCollectorProvider () {
+function TwitterCollectorProvider () {
     // @TODO make calls to Twint
     return {}
   }
   
-  export default TWitterCollectorProvider
+  export default TwitterCollectorProvider
   
