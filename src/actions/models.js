@@ -4,7 +4,7 @@
  */
 export const GetRecord = (service) => {
   return async function GetRecord (req, res, results) {
-    return service.getActive(req.getRoute().id)
+    return service.getActive(req.params.id)
   }
 }
 
@@ -30,7 +30,7 @@ export const CreateRecord = (service) => {
  */
 export const UpdateRecord = (service) => {
   return async function UpdateRecord (req, res, results) {
-    return service.update(req.getRoute().id, req.body)
+    return service.update(req.params.id, req.body)
   }
 }
 
@@ -40,6 +40,6 @@ export const UpdateRecord = (service) => {
  */
 export const DeleteRecord = (service) => {
   return async function DeleteRecord (req, res, results) {
-    return service.delete(req.getRoute().id)
+    return service.delete(req.params.id)
   }
 }

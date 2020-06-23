@@ -21,7 +21,7 @@ export async function PostQueryHasBody (req, res, results) {
  * @param {*} results
  */
 export async function GetQueryHasRecordId (req, res, results) {
-  if (req.getRoute().id === undefined) {
+  if (!req.params || req.params.id === undefined) {
     throw new BadInput('No ID identified')
   }
 }
