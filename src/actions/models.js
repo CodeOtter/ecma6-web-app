@@ -1,50 +1,45 @@
-import { NotFound } from '../errors/http'
-
 /**
- * 
- * @param {*} getAction 
+ *
+ * @param {*} getAction
  */
-export const GetRecord = (getAction) => {
-    return async (req, res, results) => {
-        const id = req.getRoute().id
-
-        return getAction(req.getRoute().id)
-    }
+export const GetRecord = (service) => {
+  return async function GetRecord (req, res, results) {
+    return service.getActive(req.getRoute().id)
+  }
 }
 
-
-export const ListRecords = (listAction) => {
-    return async (req, res, results) => {
-        return listAction(req.param.criteria, req.param.skip, req.param.limit, req.param.sort)
-    }
+export const ListRecords = (service) => {
+  return async function ListRecords (req, res, results) {
+    return service.listActive(req.query.criteria, req.query.skip, req.query.limit, req.query.sort)
+  }
 }
 
 /**
- * 
- * @param {*} createAction 
+ *
+ * @param {*} createAction
  */
-export const CreateRecord = (createAction) => {
-    return async (req, res, results) => {
-        return createAction(req.body)
-    }
+export const CreateRecord = (service) => {
+  return async function CreateRecord (req, res, results) {
+    return service.create(req.body)
+  }
 }
 
 /**
- * 
- * @param {*} updateAction 
+ *
+ * @param {*} updateAction
  */
-export const UpdateRecord = (updateAction) => {
-    return async (req, res, results) => {
-        return updateAction(req.getRoute().id, req.body)
-    }
+export const UpdateRecord = (service) => {
+  return async function UpdateRecord (req, res, results) {
+    return service.update(req.getRoute().id, req.body)
+  }
 }
 
 /**
- * 
- * @param {*} deleteAction 
+ *
+ * @param {*} deleteAction
  */
-export const DeleteRecord = (deleteAction) => {
-    return async (req, res, results) => {
-        return deleteAction(req.getRoute().id)
-    }
+export const DeleteRecord = (service) => {
+  return async function DeleteRecord (req, res, results) {
+    return service.delete(req.getRoute().id)
+  }
 }

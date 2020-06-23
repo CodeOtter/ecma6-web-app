@@ -34,10 +34,10 @@ http.router.post('/messages', (req, res, next) => {
   log.info(req.body)
   message.save((err) => {
     if (err) {
-      res.sendStatus(500)
+      res.status(500)
     } else {
       socket.instance.emit('message', req.body)
-      res.sendStatus(200)
+      res.status(200)
     }
     return next()
   })

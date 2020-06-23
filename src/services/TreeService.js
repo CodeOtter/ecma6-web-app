@@ -2,8 +2,8 @@ import ModelService from './ModelService'
 import TreeNodeModel from '../models/treeNode'
 
 /**
- * 
- * @param {*} ancestors 
+ *
+ * @param {*} ancestors
  */
 function mapAncestors (ancestors) {
   if (typeof ancestors === 'string') {
@@ -26,7 +26,7 @@ function mapAncestors (ancestors) {
     }
 
     return formattedAncestors
-  } else if (typeof ancestors === 'object' && ancestors.ancestors){
+  } else if (typeof ancestors === 'object' && ancestors.ancestors) {
     // Take the ancestors of the ancestor
     const formattedAncestors = []
 
@@ -43,7 +43,6 @@ function mapAncestors (ancestors) {
     } else {
       formattedAncestors.push(this.orm.Types.ObjectId(ancestors._id))
     }
-    
     return formattedAncestors
   }
 }
@@ -65,7 +64,6 @@ export default class TreeService extends ModelService {
    * @param {TreeNode[]} children
    */
   async create ({ name, description, type, createdByAccount, ancestors, meta }) {
-
     if (!(meta instanceof Map)) {
       if (typeof meta === 'object') {
         meta = new Map(Object.entries(meta))
@@ -75,7 +73,7 @@ export default class TreeService extends ModelService {
     }
 
     meta.forEach((value, key) => {
-      if(value instanceof Array) {
+      if (value instanceof Array) {
         meta.set(key, Buffer.from(value))
       }
     })
@@ -106,7 +104,7 @@ export default class TreeService extends ModelService {
    * @param {TreeNode} treeNodeChild
    */
   async detach (treeNodeParent, treeNodeChild) {
-    const indexOf = treeNodeChild.ancestors.findIndex(ancestor => 
+    const indexOf = treeNodeChild.ancestors.findIndex(ancestor =>
       ancestor._id === treeNodeParent || ancestor._id === treeNodeParent._id
     )
 
@@ -131,9 +129,9 @@ export default class TreeService extends ModelService {
 
   /**
    * Copy a node
-   * @param {*} treeNode 
-   * @param {*} newName 
-   * @param {*} createdByAccount 
+   * @param {*} treeNode
+   * @param {*} newName
+   * @param {*} createdByAccount
    */
   async copy (treeNode, newName, createdByAccount) {
     return this.create({
@@ -159,11 +157,11 @@ export default class TreeService extends ModelService {
   }
 
   /**
-   * 
-   * @param {*} treeNode 
-   * @param {*} name 
-   * @param {*} slot 
-   * @param {*} value 
+   *
+   * @param {*} treeNode
+   * @param {*} name
+   * @param {*} slot
+   * @param {*} value
    */
   async hasMeta (treeNode, name, slot, value, meta) {
     const inheritedMeta = await this.inheritMeta(treeNode, meta)
@@ -176,9 +174,9 @@ export default class TreeService extends ModelService {
   }
 
   /**
-   * 
-   * @param {*} treeNode 
-   * @param {*} meta 
+   *
+   * @param {*} treeNode
+   * @param {*} meta
    */
   async inheritMeta (treeNode, meta) {
     const result = meta || new Map()
@@ -205,7 +203,7 @@ export default class TreeService extends ModelService {
         if (fetchedAncestor) {
           ancestorMeta = fetchedAncestor.meta
         } else {
-          ancestorMeta = ancestor.meta  
+          ancestorMeta = ancestor.meta
         }
       } else {
         ancestorMeta = ancestor.meta

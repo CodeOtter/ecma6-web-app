@@ -1,30 +1,11 @@
+import { getFunctionName } from '../actions/transform'
+
 /**
  *
  * @param {*} req
  * @param {*} res
  * @param {*} actions
  */
-async function performActions (req, res, actions = []) {
-  const results = {}
-  this.log.silly('Performing HTTP route actions...')
-  try {
-    for (const action of actions) {
-      this.log.debug(`Performing HTTP route action: ${action.name}`)
-      results[action.name] = await action(req, res, results)
-    }
-
-    if (results.ErrorOutput) {
-      return res.send(results.ErrorOutput.status || 400, results.ErrorOutput.error)
-    }
-
-    // @TODO Build debugging output
-    return res.json(results.JsonOutput)
-  } catch (e) {
-    this.log.error(e)
-    return res.send(e.status || 500, e)
-  }
-}
-
 export default class HttpService {
   /**
    * [constructor description]
@@ -38,6 +19,7 @@ export default class HttpService {
     this.log = LogService
     this.router = HttpRouteProvider
     this.instance = false
+    this.actions = new Map()
   }
 
   /**
@@ -85,7 +67,7 @@ export default class HttpService {
    */
   getOne (endpoint, actions) {
     return this.router.get(`/${endpoint}/:id`, async (req, res) => {
-      return performActions(req, res, actions)
+      return this._performActions(req, res, actions)
     })
   }
 
@@ -96,7 +78,7 @@ export default class HttpService {
    */
   get (endpoint, actions) {
     return this.router.get(`/${endpoint}`, async (req, res) => {
-      return performActions(req, res, actions)
+      return this._performActions(req, res, actions)
     })
   }
 
@@ -107,7 +89,7 @@ export default class HttpService {
    */
   post (endpoint, actions) {
     return this.router.post(`/${endpoint}`, async (req, res) => {
-      return performActions(req, res, actions)
+      return this._performActions(req, res, actions)
     })
   }
 
@@ -118,7 +100,7 @@ export default class HttpService {
    */
   patch (endpoint, actions) {
     return this.router.patch(`/${endpoint}/:id`, async (req, res) => {
-      return performActions(req, res, actions)
+      return this._performActions(req, res, actions)
     })
   }
 
@@ -129,7 +111,36 @@ export default class HttpService {
    */
   delete (endpoint, actions) {
     return this.router.del(`/${endpoint}/:id`, async (req, res) => {
-      return performActions(req, res, actions)
+      return this._performActions(req, res, actions)
     })
+  }
+
+  async _performActions (req, res, actions = []) {
+    const results = {}
+    this.log.silly('Performing HTTP route actions...')
+
+    try {
+      for (const action of actions) {
+        let actionName = this.actions.get(action)
+
+        if (!actionName) {
+          actionName = getFunctionName(action)
+          this.actions.set(action, actionName)
+        }
+
+        this.log.debug(`Performing HTTP route action: ${actionName}`)
+        results[actionName] = await action(req, res, results)
+      }
+
+      if (results.ErrorOutput) {
+        return res.send(results.ErrorOutput.status || 400, results.ErrorOutput.error)
+      }
+
+      // @TODO Build debugging output
+      return res.json(results.JsonOutput)
+    } catch (e) {
+      this.log.error(e)
+      return res.send(e.status || 500, e)
+    }
   }
 }

@@ -1,8 +1,8 @@
 // @SETUP: Import route definitions here
 
-// import './messages'
-// import './trees'
-// import './accounts'
+import './messages'
+import './trees'
+import './accounts'
 
 import { resolve } from '../container'
 
