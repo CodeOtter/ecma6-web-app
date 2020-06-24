@@ -35,7 +35,7 @@ export default class ModelService {
       ...actualUpdateCriteria
     } = criteria
 
-    const result = await this.model.updateOne({
+    await this.model.updateOne({
       _id: id,
       deletedAt: null
     }, actualUpdateCriteria, {
@@ -43,7 +43,7 @@ export default class ModelService {
       strict: false
     })
 
-    return result
+    return this.getActive(id)
   }
 
   /**
