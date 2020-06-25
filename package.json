@@ -53,7 +53,7 @@
     "airtable": "0.8.1",
     "awilix": "4.2.5",
     "aws-sdk": "2.655.0",
-    "bunyan": "^1.8.12",
+    "bunyan": "^1.8.13",
     "connect-mongo": "3.2.0",
     "discord.js": "^12.2.0",
     "dotenv": "8.2.0",
