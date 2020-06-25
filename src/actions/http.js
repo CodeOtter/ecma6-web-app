@@ -37,7 +37,8 @@ export async function JsonOutput (req, res, results) {
     results.ListRecords ||
     results.PostRecord ||
     results.UpdateRecord ||
-    results.DeleteRecord
+    results.DeleteRecord || 
+    results.CreateRecord
 
   if (result) {
     return result

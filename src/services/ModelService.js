@@ -102,6 +102,18 @@ export default class ModelService {
   }
 
   /**
+   * Returns a Model by ID
+   * @param {ObjectId} id
+   * @param {Boolean} readOnly
+   */
+  async exists (id) {
+    return this.model.exists({
+      _id: id,
+      deletedAt: null
+    })
+  }
+
+  /**
    * Returns a list of all matching Models
    * @param {Object} criteria
    * @param {Number} skip

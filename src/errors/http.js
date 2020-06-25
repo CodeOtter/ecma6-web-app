@@ -13,3 +13,19 @@ export class BadInput extends Error {
     this.status = 400
   }
 }
+
+export class ServerError extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'ServerError'
+    this.status = 500
+  }
+}
+
+export class Conflict extends Error {
+  constructor (message) {
+    super(message)
+    this.name = 'Conflict'
+    this.status = 409
+  }
+}

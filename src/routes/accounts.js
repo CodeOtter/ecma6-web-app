@@ -9,7 +9,8 @@ import {
   ListRecords,
   CreateRecord,
   UpdateRecord,
-  DeleteRecord
+  DeleteRecord,
+  DoesRecordExist
 } from '../actions/models'
 
 const http = resolve('HttpService')
@@ -20,6 +21,7 @@ export const endpoint = 'accounts'
 http.getOne(endpoint, [
   GetQueryHasRecordId,
   GetRecord(accountService),
+  DoesRecordExist(accountService),
   JsonOutput
 ])
 
@@ -37,12 +39,14 @@ http.post(endpoint, [
 http.patch(endpoint, [
   GetQueryHasRecordId,
   PostQueryHasBody,
+  DoesRecordExist(accountService),
   UpdateRecord(accountService),
   JsonOutput
 ])
 
 http.delete(endpoint, [
   GetQueryHasRecordId,
+  DoesRecordExist(accountService),
   DeleteRecord(accountService),
   JsonOutput
 ])
