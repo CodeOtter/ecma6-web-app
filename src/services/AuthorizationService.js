@@ -43,4 +43,25 @@ export default class AuthorizationService {
     }
     return false
   }
+
+  /**
+   * 
+   * @param {*} account 
+   * @param {*} data 
+   * @param {*} fields 
+   */
+  async filterFields (account, data, fields) {
+    const fields = Object.key(fields)
+    const result = {}
+
+    for (const field of fields) {
+      const canUse = fields[field]
+
+      if (await canUse(account, data, fields[field], field) && data[field] !== undefined) {
+        result[field] = data[field]
+      }
+    }
+
+    return result
+  }
 }
