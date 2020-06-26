@@ -50,15 +50,25 @@ export default class AuthorizationService {
    * @param {*} data 
    * @param {*} fields 
    */
-  async filterFields (account, data, fields) {
-    const fields = Object.key(fields)
+  async filterFields (account, data, validationSchema) {
+    const fields = Object.key(validationSchema)
     const result = {}
 
     for (const field of fields) {
-      const canUse = fields[field]
+      const filters = validationSchema[field]
 
-      if (await canUse(account, data, fields[field], field) && data[field] !== undefined) {
-        result[field] = data[field]
+      if (filters instanceof Array) {
+        for (const filter of filters) {
+          if (await filter(account, data, data[field], field) && data[field] !== undefined) {
+            result[field] = data[field]
+          }
+        }
+      } else {
+        const canUse = fields[field]
+
+        if (await canUse(account, data, data[field], field) && data[field] !== undefined) {
+          result[field] = data[field]
+        }
       }
     }
 

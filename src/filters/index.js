@@ -106,11 +106,11 @@ export async function recordExists (account, data) {
  * @param {*} account 
  * @param {*} data 
  */
-export async function requesterIsLoggedIn (account, data) {
+export async function requesterIsLoggedIn (account) {
   return !!account
 }
 
-export async function requesterIsAdmin (account, data) {
+export async function requesterIsAdmin (account) {
   if (!account) {
     return false
   }
@@ -123,7 +123,7 @@ export async function requesterIsAdmin (account, data) {
  * @param {*} account 
  * @param {*} data 
  */
-export async function requesterIsActive (account, data) {
+export async function requesterIsActive (account) {
   if (!account) {
     return false
   }
@@ -136,8 +136,8 @@ export async function requesterIsActive (account, data) {
  * @param {*} account 
  * @param {*} data 
  */
-export async function isFieldEmpty (account, data, value, fieldName) {
-  if (data === undefined || data === null) {
+export async function isFieldEmpty (account, data, value) {
+  if (value === undefined || value === null) {
     return true
   }
 
