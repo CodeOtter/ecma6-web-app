@@ -136,7 +136,7 @@ export async function requesterIsActive (account) {
  * @param {*} account 
  * @param {*} data 
  */
-export async function isFieldEmpty (account, data, value) {
+export async function fieldIsEmpty (account, data, value) {
   if (value === undefined || value === null) {
     return true
   }
@@ -160,4 +160,44 @@ export async function isFieldEmpty (account, data, value) {
   }
 
   return false
+}
+
+export async function fieldIsNotEmpty (account, data, value) {
+  return !fieldIsEmpty(account, data, value)
+}
+
+/**
+ * 
+ * @param  {...any} filters 
+ */
+export function passOne (...filters) {
+  return async (account, data, value) => {
+    for (const filter of filters) {
+      if (await filter(account, data, value)) {
+        return true
+      }
+    }
+
+    return false
+  }
+}
+
+/**
+ * 
+ * @param  {...any} filters 
+ */
+export function passAll (...filters) {
+  return async (account, data, value) => {
+    for (const filter of filters) {
+      if (await filter(account, data, value) === false) {
+        return false
+      }
+    }
+
+    return true
+  }
+}
+
+export async function pass () {
+  return true
 }

@@ -4,7 +4,7 @@ import {
 
 const auth = resolve('AuthorizationService')
 
-function getModelResults (results) {
+export function getModelResults (results) {
   return results.GetRecord ||
     results.ListRecords ||
     results.UpdateRecord ||

@@ -55,20 +55,21 @@ export default class AuthorizationService {
     const result = {}
 
     for (const field of fields) {
-      const filters = validationSchema[field]
+      const filters = validationSchema[field] instanceof Array
+        ? filters
+        : [filters]
 
-      if (filters instanceof Array) {
-        for (const filter of filters) {
-          if (await filter(account, data, data[field], field) && data[field] !== undefined) {
-            result[field] = data[field]
-          }
-        }
-      } else {
-        const canUse = fields[field]
+      let isFieldValid = true
 
-        if (await canUse(account, data, data[field], field) && data[field] !== undefined) {
-          result[field] = data[field]
+      for (const filter of filters) {
+        if (!await filter(account, data, data[field], field) && data[field] !== undefined) {
+          isFieldValid = false
+          break
         }
+      }
+
+      if (isFieldValid) {
+        result[field] = data[field]
       }
     }
 
