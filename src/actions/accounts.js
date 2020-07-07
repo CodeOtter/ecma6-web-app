@@ -1,6 +1,8 @@
+import { resolve } from '../container'
 import {
   pass,
-  fieldIsNotEmpty
+  fieldIsNotEmpty,
+  requesterIsAdmin
 } from '../filters'
 
 const auth = resolve('AuthorizationService')
@@ -34,7 +36,7 @@ export async function AccountInput (req, res, results) {
     ? req.body.status
     : 'pending'
 
-  const status = isAdmin
+  const createdByAccount = isAdmin
     ? req.body.createdByAccount
     : req.account
 
@@ -42,7 +44,7 @@ export async function AccountInput (req, res, results) {
     ? req.body.roles
     : []
 
-  const roles = isAdmin
+  const permissions = isAdmin
     ? this.auth.getPermissionsFromJson(req.body.permissions)
     : {}
 
@@ -93,4 +95,3 @@ export async function AccountListOutput (req, res, results) {
     records.push(await prepareOutput(req.account, record))
   }
 }
-

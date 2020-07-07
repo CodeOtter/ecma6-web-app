@@ -1,3 +1,4 @@
+import { resolve } from '../container'
 import {
     NotFound,
     ServerError,
@@ -5,7 +6,7 @@ import {
     BadInput
 } from '../errors/http'
 
-const auth = resolve('AuthorizationService')
+// const auth = resolve('AuthorizationService')
 
 /**
  * 

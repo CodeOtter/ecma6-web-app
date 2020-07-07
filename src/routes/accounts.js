@@ -16,7 +16,7 @@ import {
   AccountInput,
   AccountOutput,
   AccountListOutput
-} from '../accounts/accounts'
+} from '../actions/accounts'
 
 const http = resolve('HttpService')
 const accountService = resolve('AccountService')

@@ -1,10 +1,8 @@
 export default class AuthorizationService {
-  /**
-   * Constructor
-   * @param {*} param
-   */
-  constructor ({}) {
-  }
+
+  async start () {}
+
+  async stop () {}
 
   /**
    * 
@@ -51,13 +49,13 @@ export default class AuthorizationService {
    * @param {*} fields 
    */
   async filterFields (account, data, validationSchema) {
-    const fields = Object.key(validationSchema)
+    const fields = Object.keys(validationSchema)
     const result = {}
 
     for (const field of fields) {
       const filters = validationSchema[field] instanceof Array
-        ? filters
-        : [filters]
+        ? validationSchema[field]
+        : [validationSchema[field]]
 
       let isFieldValid = true
 

@@ -1,3 +1,4 @@
+import { resolve } from '../container'
 import {
   BadInput
 } from '../errors/http'

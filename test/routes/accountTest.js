@@ -11,7 +11,11 @@ test.before(async t => {
   }
 })
 */
-test.skip('Creating an Account via HTTP route', async t => {
-  const account = await http.post(`${host}/accounts`, {})
-  console.log(account)
+test('Creating an Account via HTTP routes', async t => {
+  try {
+    const account = await http.post(`${host}/accounts`, {})
+    console.log(account)
+  } catch (e) {
+      console.error(e)
+  }
 })

@@ -37,7 +37,7 @@ export default class HttpService {
 
         this.instance = this.router.listen(portNumber, () => {
           this.log.info(`HttpService started, listening on ${portNumber}`)
-          this.log.silly(this.router.getDebugInfo())
+          // this.log.silly(this.router.getDebugInfo())
           resolve(this.instance)
         })
       } else {
