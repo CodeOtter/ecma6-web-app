@@ -21,7 +21,7 @@ export function getModelResults (results) {
   */
 export async function PostQueryHasBody (req, res, results) {
   if (req.body === undefined) {
-    throw new BadInput('No ID identified')
+    throw new BadInput('No body submitted in POST')
   }
 }
 

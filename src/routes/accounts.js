@@ -15,7 +15,8 @@ import {
 import {
   AccountInput,
   AccountOutput,
-  AccountListOutput
+  AccountListOutput,
+  PrepareAccountInputToRecord
 } from '../actions/accounts'
 
 const http = resolve('HttpService')
@@ -40,6 +41,7 @@ http.get(endpoint, [
 http.post(endpoint, [
   PostQueryHasBody,
   AccountInput,
+  PrepareAccountInputToRecord,
   CreateRecord(accountService),
   AccountOutput,
   JsonOutput

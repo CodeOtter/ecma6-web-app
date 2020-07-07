@@ -13,7 +13,7 @@ const auth = resolve('AuthorizationService')
  * @param {*} record 
  */
 async function prepareOutput (account, record) {
-  return auth.filterFields(account, getModelResults(record), {
+  return auth.filterFields(account, record, {
     name: pass,
     displayName: pass,
     status: pass,
@@ -21,6 +21,11 @@ async function prepareOutput (account, record) {
     roles: pass,
     permissions: pass
   })
+}
+
+export async function PrepareAccountInputToRecord (req, res, results) {
+  results.RecordInput = results.AccountInput
+  return null
 }
 
 /**
@@ -34,7 +39,7 @@ export async function AccountInput (req, res, results) {
 
   const status = isAdmin
     ? req.body.status
-    : 'pending'
+    : undefined
 
   const createdByAccount = isAdmin
     ? req.body.createdByAccount

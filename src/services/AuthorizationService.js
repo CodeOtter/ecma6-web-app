@@ -60,7 +60,7 @@ export default class AuthorizationService {
       let isFieldValid = true
 
       for (const filter of filters) {
-        if (!await filter(account, data, data[field], field) && data[field] !== undefined) {
+        if (!await filter(account, data, data[field], field)) {
           isFieldValid = false
           break
         }

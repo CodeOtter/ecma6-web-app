@@ -26,7 +26,7 @@ function idsMatch(account, data) {
  * @param {*} value 
  */
 function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
+  return value !== null && value.length !== undefined && !(value instanceof Function);
 }
 
 /**
@@ -137,7 +137,7 @@ export async function requesterIsActive (account) {
  * @param {*} account 
  * @param {*} data 
  */
-export async function fieldIsEmpty (account, data, value) {
+export async function fieldIsEmpty (account, data, value, fieldName) {
   if (value === undefined || value === null) {
     return true
   }
@@ -154,17 +154,17 @@ export async function fieldIsEmpty (account, data, value) {
     return !baseKeys(value).length;
   }
 
-  for (var key in value) {
-    if (hasOwnProperty.call(value, key)) {
-      return false
-    }
+  const keys = Object.keys(value)
+
+  if (keys.length === 0) {
+    return true
   }
 
   return false
 }
 
-export async function fieldIsNotEmpty (account, data, value) {
-  return !fieldIsEmpty(account, data, value)
+export async function fieldIsNotEmpty (account, data, value, fieldName) {
+  return !(await fieldIsEmpty(account, data, value, fieldName))
 }
 
 /**

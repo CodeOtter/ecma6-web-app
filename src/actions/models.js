@@ -82,8 +82,9 @@ export const ListRecords = (service) => {
  */
 export const CreateRecord = (service) => {
   return async function CreateRecord (req, res, results) {
+    console.log('WHAAAAAAAAAAAAAAAAAAAAAT', req.body, results)
     try {
-      return await service.create(req.body)
+      return await service.create(results.RecordInput || req.body)
     } catch (e) {
       if (e.name === 'CastError') {
         throw new BadInput(e)
