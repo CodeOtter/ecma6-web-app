@@ -8,7 +8,7 @@
     "doctor": "./node_modules/.bin/clinic doctor -- node src/index.js",
     "flame": "./node_modules/.bin/clinic flame -- node src/index.js",
     "bubbleprof": "./node_modules/.bin/clinic bubbleprof -- node src/index.js",
-    "test": "ava --verbose",
+    "test": "HTTP_PORT=0 ava --verbose",
     "snyk-protect": "./node_modules/.bin/snyk protect",
     "prepublish": "npm run snyk-protect"
   },
@@ -45,7 +45,7 @@
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
     "lerna": "^3.22.1",
-    "mongo-unit": "2.0.1",
+    "mongodb-memory-server": "^6.6.1",
     "test-listen": "^1.1.0",
     "testdouble": "3.13.1"
   },

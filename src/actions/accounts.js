@@ -23,11 +23,6 @@ async function prepareOutput (account, record) {
   })
 }
 
-export async function PrepareAccountInputToRecord (req, res, results) {
-  results.RecordInput = results.AccountInput
-  return null
-}
-
 /**
  * 
  * @param {*} req 

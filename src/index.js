@@ -5,4 +5,6 @@ process.on('uncaughtException', function(err) {
 require = require('esm')(module)
 require('./config')
 require('./dependencies')
-require('./app')
+const { start } = require('./app')
+
+start()

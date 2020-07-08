@@ -36,7 +36,7 @@ export default class HttpService {
         const portNumber = port || this.port
 
         this.instance = this.router.listen(portNumber, () => {
-          this.log.info(`HttpService started, listening on ${portNumber}`)
+          this.log.info(`HttpService started, listening on ${this.instance.address().port}`)
           // this.log.silly(this.router.getDebugInfo())
           resolve(this.instance)
         })
@@ -58,6 +58,13 @@ export default class HttpService {
       this.instance = null
       this.log.debug('HttpService stopped.')
     }
+  }
+
+  getPort () {
+    if (this.instance) {
+      return this.instance.address().port
+    }
+    return undefined
   }
 
   /**

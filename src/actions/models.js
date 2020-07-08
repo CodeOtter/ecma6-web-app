@@ -80,11 +80,10 @@ export const ListRecords = (service) => {
  *
  * @param {*} modelService
  */
-export const CreateRecord = (service) => {
+export const CreateRecord = (service, resultsSource = 'RecordInput') => {
   return async function CreateRecord (req, res, results) {
-    console.log('WHAAAAAAAAAAAAAAAAAAAAAT', req.body, results)
     try {
-      return await service.create(results.RecordInput || req.body)
+      return await service.create(results[resultsSource] || req.body)
     } catch (e) {
       if (e.name === 'CastError') {
         throw new BadInput(e)
@@ -101,10 +100,10 @@ export const CreateRecord = (service) => {
  *
  * @param {*} modelService
  */
-export const UpdateRecord = (service) => {
+export const UpdateRecord = (service, resultsSource = 'RecordInput') => {
   return async function UpdateRecord (req, res, results) {
     try {
-      return await service.update(req.params.id, req.body)
+      return await service.update(req.params.id, results[resultsSource] || req.body)
     } catch (e) {
       if (e.name === 'CastError') {
         throw new BadInput(e)

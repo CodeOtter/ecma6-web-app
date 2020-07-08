@@ -1,4 +1,6 @@
 require = require('esm')(module)
 require('../../src/config')
 require('./dependencies')
-require('../../src/app')
+const { start } = require('../../src/app')
+
+start()
