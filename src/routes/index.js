@@ -2,6 +2,7 @@
 
 import './messages'
 import './trees'
+import './accounts'
 
 import { resolve } from '../container'
 

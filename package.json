@@ -8,14 +8,15 @@
     "doctor": "./node_modules/.bin/clinic doctor -- node src/index.js",
     "flame": "./node_modules/.bin/clinic flame -- node src/index.js",
     "bubbleprof": "./node_modules/.bin/clinic bubbleprof -- node src/index.js",
-    "test": "ava",
-    "snyk-protect": "snyk protect",
+    "test": "HTTP_PORT=0 ava --verbose",
+    "snyk-protect": "./node_modules/.bin/snyk protect",
     "prepublish": "npm run snyk-protect"
   },
   "author": "",
   "license": "ISC",
   "ava": {
     "files": [
+      "test/appTest.js",
       "test/**/*",
       "!test/config",
       "!test/mocks"
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "ava": "3.5.1",
+    "ava-http": "^1.0.0",
     "clinic": "5.0.1",
     "danger": "10.1.1",
     "eslint": "6.8.0",
@@ -42,7 +44,9 @@
     "eslint-plugin-node": "11.0.0",
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
-    "mongo-unit": "2.0.1",
+    "lerna": "^3.22.1",
+    "mongodb-memory-server": "^6.6.1",
+    "test-listen": "^1.1.0",
     "testdouble": "3.13.1"
   },
   "dependencies": {
@@ -50,7 +54,7 @@
     "airtable": "0.8.1",
     "awilix": "4.2.5",
     "aws-sdk": "2.655.0",
-    "body-parser": "1.19.0",
+    "bunyan": "^1.8.12",
     "connect-mongo": "3.2.0",
     "dotenv": "8.2.0",
     "esm": "3.2.25",
@@ -62,9 +66,10 @@
     "pubnub": "4.27.4",
     "restify": "8.5.1",
     "rollbar": "2.15.1",
+    "rollbar": "2.15.0",
+    "snyk": "1.316.2",
     "socket.io": "2.3.0",
-    "twilio": "3.42.1",
-    "snyk": "1.316.2"
+    "twilio": "3.42.1"
   },
   "snyk": true
 }

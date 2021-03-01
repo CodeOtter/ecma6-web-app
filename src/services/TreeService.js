@@ -1,83 +1,57 @@
 import ModelService from './ModelService'
 import TreeNodeModel from '../models/treeNode'
-import AccountModel from '../models/account'
-import { flattenTree } from '../actions/transform'
 
-const projection = {
-  name: 1,
-  description: 1,
-  deletedAt: 1,
-  type: 1,
-  parent: 1,
-  createdByAccount: 1,
-  deletedByAccount: 1
-}
+/**
+ *
+ * @param {*} ancestors
+ */
+function mapAncestors (ancestors) {
+  if (typeof ancestors === 'string') {
+    // Convert strings
+    if (ancestors.indexOf(',') > -1) {
+      return [this.orm.Types.ObjectId(ancestors)]
+    } else {
+      return ancestors.split(',').map(this.orm.Types.ObjectId)
+    }
+  } else if (ancestors instanceof Array) {
+    // Convert array of objects to just their IDs
+    const formattedAncestors = []
 
-function getAggregate (criteria, limit) {
-  return TreeNodeModel.aggregate([
-    { $limit: limit },
-    { $match: criteria },
-    {
-      $lookup: {
-        from: 'accounts',
-        localField: 'createdByAccount',
-        foreignField: '_id',
-        as: 'createdByAccount'
-      }
-    },
-    {
-      $lookup: {
-        from: 'accounts',
-        localField: 'deletedByAccount',
-        foreignField: '_id',
-        as: 'deletedByAccount'
-      }
-    },
-    {
-      $graphLookup: {
-        from: 'treeNodes',
-        startWith: '$parent',
-        connectFromField: 'parent',
-        connectToField: '_id',
-        as: 'children'
-      }
-    },
-    {
-      $project: {
-        ...projection,
-        children: 1,
-        createdByAccount: { $arrayElemAt: ['$createdByAccount', 0] },
-        deletedByAccount: { $arrayElemAt: ['$deletedByAccount', 0] }
+    for (const ancestor of ancestors) {
+      if (ancestor._id) {
+        formattedAncestors.push(ancestor)
+      } else {
+        formattedAncestors.push(this.orm.Types.ObjectId(ancestor))
       }
     }
-  ])
-}
 
-async function aggregateWrapper (accessor, readOnly) {
-  if (!readOnly) {
-    const aggregate = await accessor.exec()
-    console.log('aggregate', aggregate)
-    const result = new TreeNodeModel(aggregate[0])
+    return formattedAncestors
+  } else if (typeof ancestors === 'object' && ancestors.ancestors) {
+    // Take the ancestors of the ancestor
+    const formattedAncestors = []
 
-    const createdByAccount = aggregate[0].createdByAccount
-      ? new AccountModel(aggregate[0].createdByAccount)
-      : null
-    const deletedByAccount = aggregate[0].deletedByAccount
-      ? new AccountModel(aggregate[0].deletedByAccount)
-      : null
+    for (const ancestor of ancestors.ancestors) {
+      if (ancestor._id) {
+        formattedAncestors.push(ancestor)
+      } else {
+        formattedAncestors.push(this.orm.Types.ObjectId(ancestor))
+      }
+    }
 
-    result.createdByAccount = createdByAccount
-    result.deletedByAccount = deletedByAccount
-
-    return result
-  } else {
-    return accessor.exec()
+    if (typeof ancestors._id === 'object') {
+      formattedAncestors.push(ancestors._id)
+    } else {
+      formattedAncestors.push(this.orm.Types.ObjectId(ancestors._id))
+    }
+    return formattedAncestors
   }
 }
 
 export default class TreeService extends ModelService {
-  constructor ({ LogService }) {
+  constructor ({ LogService, MongoOrmProvider, AuthorizationService }) {
     super(LogService, TreeNodeModel)
+    this.orm = MongoOrmProvider
+    this.auth = AuthorizationService
     this.log.debug('TreeService constructed')
   }
 
@@ -89,19 +63,29 @@ export default class TreeService extends ModelService {
    * @param {Account} createdByAccount
    * @param {TreeNode[]} children
    */
-  async create (name, description, type, createdByAccount, children) {
+  async create ({ name, description, type, createdByAccount, ancestors, meta }) {
+    if (!(meta instanceof Map)) {
+      if (typeof meta === 'object') {
+        meta = new Map(Object.entries(meta))
+      } else {
+        meta = new Map()
+      }
+    }
+
+    meta.forEach((value, key) => {
+      if (value instanceof Array) {
+        meta.set(key, Buffer.from(value))
+      }
+    })
+
     return super.create({
       name,
       description,
       type,
-      children,
-      createdByAccount
+      ancestors: mapAncestors(ancestors),
+      createdByAccount,
+      meta: this.auth.getPermissionsFromJson(meta)
     })
-  }
-
-  async get (id, readOnly = false) {
-    const aggregate = getAggregate({ _id: id }, 1)
-    return aggregateWrapper(aggregate, readOnly)
   }
 
   /**
@@ -110,17 +94,8 @@ export default class TreeService extends ModelService {
    * @param {TreeNode} treeNodeChild
    */
   async attach (treeNodeParent, treeNodeChild) {
-    treeNodeChild.parent = treeNodeParent._id
-    console.log('treeNodeChild', treeNodeChild)
+    treeNodeChild.ancestors = mapAncestors(treeNodeParent)
     return treeNodeChild.save()
-    /*
-    treeNodeParent.children.push(treeNodeChild)
-    await treeNodeParent.save()
-    await TreeNodeModel.deleteOne({
-      _id: treeNodeChild._id
-    })
-    return true
-    */
   }
 
   /**
@@ -129,75 +104,157 @@ export default class TreeService extends ModelService {
    * @param {TreeNode} treeNodeChild
    */
   async detach (treeNodeParent, treeNodeChild) {
-    const record = treeNodeParent.children.pull({
-      _id: treeNodeChild._id
-    })
+    const indexOf = treeNodeChild.ancestors.findIndex(ancestor =>
+      ancestor._id === treeNodeParent || ancestor._id === treeNodeParent._id
+    )
 
-    if (record) {
-      record.remove()
-      await treeNodeParent.save()
-      return treeNodeChild.save()
+    if (indexOf > -1) {
+      treeNodeChild.ancestors.splice(indexOf)
     } else {
       return false
     }
+    return treeNodeChild.save()
   }
 
   /**
-   * Copies a TreeNode child from one TreeNode to another
+   * Makes a TreeNode a sibling of another
    * @param {TreeNode} targetTreeNode
    * @param {TreeNode} fromTreeNode
    * @param {TreeNode} toTreeNode
    */
-  async copy (targetTreeNode, fromTreeNode, toTreeNode) {
-    const index = fromTreeNode.children.indexOf(targetTreeNode)
-
-    if (index === -1) {
-      return false
-    }
-
-    toTreeNode.children.push(targetTreeNode)
-
-    await toTreeNode.save()
-
-    return {
-      target: targetTreeNode,
-      from: fromTreeNode,
-      to: toTreeNode
-    }
+  async siblingify (treeNode, ofTreeNode) {
+    treeNode.ancestors = ofTreeNode.ancestors
+    return treeNode.save()
   }
 
   /**
-   * Moves a TreeNode child from one TreeNode to another
+   * Copy a node
+   * @param {*} treeNode
+   * @param {*} newName
+   * @param {*} createdByAccount
+   */
+  async copy (treeNode, newName, createdByAccount) {
+    return this.create({
+      name: newName,
+      description: treeNode.description,
+      type: treeNode.type,
+      createdByAccount,
+      ancestors: treeNode.ancestors,
+      meta: treeNode.meta
+    })
+  }
+
+  /**
+   * Moves a TreeNode to be a child of a TreeNode
    * @param {TreeNode} targetTreeNode
    * @param {TreeNode} fromTreeNode
    * @param {TreeNode} toTreeNode
    */
-  async move (targetTreeNode, fromTreeNode, toTreeNode) {
-    const index = fromTreeNode.children.indexOf(targetTreeNode)
-    if (index === -1) {
-      return false
-    }
-
-    fromTreeNode.splice(index, 1)
-    toTreeNode.children.push(targetTreeNode)
-
-    await fromTreeNode.save()
-    await toTreeNode.save()
-
-    return {
-      target: targetTreeNode,
-      from: fromTreeNode,
-      to: toTreeNode
-    }
+  async move (fromTreeNode, toTreeNode) {
+    fromTreeNode.ancestors = toTreeNode.ancestors
+    fromTreeNode.ancestors.push(toTreeNode._id)
+    return fromTreeNode.save()
   }
 
   /**
-   * Gets a list of all TreeNode children IDs
-   * @param {*} id
+   *
+   * @param {*} treeNode
+   * @param {*} name
+   * @param {*} slot
+   * @param {*} value
    */
-  async getTreeIdMap (id) {
-    const tree = await TreeNodeModel.findById(id).lean()
-    const result = flattenTree(tree, 'children', '_id')
+  async hasMeta (treeNode, name, slot, value, meta) {
+    const inheritedMeta = await this.inheritMeta(treeNode, meta)
+    const topic = inheritedMeta.get(name)
+    if (!topic) {
+      return false
+    }
+
+    return topic[slot] === value
+  }
+
+  /**
+   *
+   * @param {*} treeNode
+   * @param {*} meta
+   */
+  async inheritMeta (treeNode, meta) {
+    const result = meta || new Map()
+
+    // Copy the initial meta
+    treeNode.meta.forEach((value, key) => {
+      result.set(key, Buffer.alloc(value.length))
+      value.copy(result.get(key))
+    })
+
+    const reversedAncestors = [...treeNode.ancestors].reverse()
+
+    // Move backwards through all ancestors for proper inheritance representation
+    for (const ancestor of reversedAncestors) {
+      let ancestorMeta
+
+      // Get the ancestorMeta regardless of the treeNode state
+      if (!ancestor.meta) {
+        const id = typeof ancestor === 'string'
+          ? ancestor
+          : ancestor._id.toString()
+
+        const fetchedAncestor = await super.getActive(id)
+        if (fetchedAncestor) {
+          ancestorMeta = fetchedAncestor.meta
+        } else {
+          ancestorMeta = ancestor.meta
+        }
+      } else {
+        ancestorMeta = ancestor.meta
+      }
+
+      // Check each buffer and write only when the slot hasn't been written to
+      ancestorMeta.forEach((ancestorValue, key) => {
+        let ancestorBuffer = ancestorValue
+        let resultBuffer = result.get(key)
+
+        if (resultBuffer) {
+          // The ancestorValue has been merged with an ancestor
+          if (ancestorValue.length !== result.get(key).length) {
+            const newSize = ancestorValue.length >= result.get(key).length
+              ? ancestorValue.length
+              : result.get(key).length
+
+            // Readjust for a new buffer size
+            ancestorBuffer = Buffer.alloc(newSize)
+            resultBuffer = Buffer.alloc(newSize)
+            result.get(key).forEach((value, i) => {
+              resultBuffer[i] = value
+            })
+
+            for (var k = 0; k < newSize; k++) {
+              if (ancestorValue[k]) {
+                // Copy over the old ancestorValue to the new buffer
+                ancestorBuffer[k] = ancestorValue[k]
+              } else {
+                // Set the extended slot to 0
+                ancestorBuffer[k] = 0
+              }
+            }
+          }
+
+          for (var i = 0; i < resultBuffer.length; i++) {
+            if (resultBuffer[i] === 0 || resultBuffer[i] === undefined) {
+              // Allow the ancestor to overwrite when the result is zero
+              resultBuffer[i] = ancestorBuffer[i]
+            }
+          }
+        } else {
+          // Copy the ancestor value over to the result buffer
+          resultBuffer = Buffer.alloc(ancestorValue.length)
+          ancestorValue.copy(resultBuffer)
+        }
+
+        result.set(key, resultBuffer)
+      })
+    }
+
     return result
   }
 }

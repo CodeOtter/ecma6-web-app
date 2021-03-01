@@ -1,6 +1,6 @@
 import { MongoFindCount } from '../config'
 
-export default class TreeService {
+export default class ModelService {
   constructor (LogService, Model) {
     this.log = LogService
     this.model = Model
@@ -14,7 +14,7 @@ export default class TreeService {
    * @param {Account} createdByAccount
    * @param {Model[]} children
    */
-  async create (criteria) {
+  async create (criteria = {}) {
     const result = await this.model.create(criteria)
     return result
   }
@@ -24,7 +24,7 @@ export default class TreeService {
    * @param {ObjectId} id
    * @param {Object} criteria
    */
-  async update (id, criteria) {
+  async update (id, criteria = {}) {
     const {
       _id,
       deletedAt,
@@ -35,14 +35,15 @@ export default class TreeService {
       ...actualUpdateCriteria
     } = criteria
 
-    const result = await this.model.updateOne({
-      _id: id
+    await this.model.updateOne({
+      _id: id,
+      deletedAt: null
     }, actualUpdateCriteria, {
       new: true,
       strict: false
     })
 
-    return result
+    return this.getActive(id)
   }
 
   /**
@@ -98,6 +99,18 @@ export default class TreeService {
 
     const result = await accessor.exec()
     return result
+  }
+
+  /**
+   * Returns a Model by ID
+   * @param {ObjectId} id
+   * @param {Boolean} readOnly
+   */
+  async exists (id) {
+    return this.model.exists({
+      _id: id,
+      deletedAt: null
+    })
   }
 
   /**

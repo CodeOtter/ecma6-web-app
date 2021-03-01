@@ -25,4 +25,13 @@ export default class LogService {
   debug (message) {
     console.debug(message)
   }
+
+    /**
+   * [silly description]
+   * @param  {[type]} message [description]
+   * @return {[type]}         [description]
+   */
+  silly (message) {
+    console.debug(message)
+  }
 }

@@ -3,7 +3,7 @@ import { arrayToKeyPair } from '../actions/transform'
 const Schema = mongoose.Schema
 
 export function autoPopulate (next) {
-  this.populate('children')
+  this.populate('ancestors')
   this.populate('createdByAccount')
   this.populate('deletedByAccount')
   next()
@@ -32,17 +32,15 @@ export const TreeNodeSchema = new Schema({
     enum: TreeNodeTypeList,
     required: true
   },
-  parent: {
-    type: Schema.Types.ObjectId,
-    ref: 'TreeNode',
-    default: null
-  },/*
-  children: [{
+  meta: {
+    type: Map,
+    of: Buffer
+  },
+  ancestors: [{
     type: Schema.Types.ObjectId,
     ref: 'TreeNode',
     default: []
   }],
-  */
   createdByAccount: {
     type: Schema.Types.ObjectId,
     ref: 'Account',
