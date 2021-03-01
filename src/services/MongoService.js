@@ -20,7 +20,7 @@ export default class MongoService {
     this.log.debug('Starting MongoService instance...')
     return new Promise((resolve, reject) => {
       if (!this.instance) {
-        this.instance = this.mongoOrm.connect(url || this.url, {
+         this.instance = this.mongoOrm.connect(url || this.url, {
           useNewUrlParser: true,
           useUnifiedTopology: true
         }, err => {

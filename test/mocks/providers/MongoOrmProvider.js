@@ -9,7 +9,7 @@ const MongoOrmProvider = (options) => {
   const connect = provider.connect
 
   td.replace(provider, 'connect', async (url, config = {}, callback) => {
-    const mongoUrl = await mongoServer.getConnectionString()
+    const mongoUrl = await mongoServer.getUri()
 
     await connect(mongoUrl, {
       useNewUrlParser: true,
