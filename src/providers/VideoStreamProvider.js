@@ -3,7 +3,7 @@ import OpenTok from 'opentok'
 /**
  * [SocketProvider description]
  */
-function VideoStreamProvider ({ TokboxApiKey, TokboxApiSecret }) {
+function VideoStreamProvider ({ TokboxApiKey = '', TokboxApiSecret = ''}) {
   return new OpenTok(TokboxApiKey, TokboxApiSecret)
 }
 
