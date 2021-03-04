@@ -53,7 +53,7 @@
     "@sendgrid/client": "6.5.5",
     "airtable": "0.10.1",
     "awilix": "4.2.6",
-    "aws-sdk": "2.814.0",
+    "aws-sdk": "2.841.0",
     "bunyan": "1.8.13",
     "connect-mongo": "3.2.0",
     "dotenv": "8.2.0",
