@@ -63,7 +63,7 @@
     "opentok": "2.10.0",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
-    "pubnub": "4.27.5",
+    "pubnub": "4.29.11",
     "restify": "8.5.1",
     "rollbar": "2.15.1",
     "snyk": "1.463.0",
