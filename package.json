@@ -68,7 +68,7 @@
     "rollbar": "2.15.1",
     "snyk": "1.463.0",
     "socket.io": "3.0.0",
-    "twilio": "4.6.0"
+    "twilio": "4.7.0"
   },
   "snyk": true
 }
