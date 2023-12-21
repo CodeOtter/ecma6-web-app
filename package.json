@@ -50,7 +50,7 @@
     "testdouble": "3.13.1"
   },
   "dependencies": {
-    "@sendgrid/client": "6.5.5",
+    "@sendgrid/client": "7.0.0",
     "airtable": "0.10.1",
     "awilix": "4.2.6",
     "aws-sdk": "2.814.0",
@@ -60,15 +60,15 @@
     "esm": "3.2.25",
     "express-session": "1.17.1",
     "mongoose": "5.11.7",
-    "opentok": "2.10.0",
+    "opentok": "2.17.0",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
-    "pubnub": "4.27.5",
+    "pubnub": "7.3.2",
     "restify": "8.5.1",
     "rollbar": "2.15.1",
     "snyk": "1.463.0",
     "socket.io": "3.0.0",
-    "twilio": "4.6.0"
+    "twilio": "4.7.0"
   },
   "snyk": true
 }
